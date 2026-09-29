@@ -5,198 +5,233 @@ Produit schema_methodologie.png (300 dpi), .svg et .pdf dans le même dossier.
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, Rectangle
+from matplotlib.patches import Circle, FancyBboxPatch, Rectangle
 
 plt.rcParams["font.family"] = "DejaVu Sans"
 
 # Palette : (bordure, bandeau de titre, fond)
 STYLES = {
-    "data": ("#3B6EA8", "#D6E4F5", "#F4F8FD"),
-    "catalyst": ("#C7772B", "#F9DDBF", "#FEF7EE"),
-    "python": ("#3E8E4F", "#D3EBD7", "#F2F9F3"),
-    "result": ("#7E4A9E", "#E6D5F0", "#F9F4FC"),
-    "valid": ("#A88A10", "#F6E9A8", "#FFFBE8"),
+    "data": ("#2F63A0", "#D6E4F5", "#F4F8FD"),
+    "catalyst": ("#C06A1E", "#F9DDBF", "#FEF7EE"),
+    "python": ("#2F8043", "#D3EBD7", "#F2F9F3"),
+    "result": ("#743F95", "#E6D5F0", "#F9F4FC"),
+    "valid": ("#9C7F0C", "#F6E9A8", "#FFFBE8"),
 }
 LEGEND = [
     ("data", "Données"),
     ("catalyst", "CATALYST Professional"),
     ("python", "Python (scripts)"),
     ("result", "Résultats"),
-    ("valid", "Validation / interprétation"),
+    ("valid", "Validation"),
 ]
-INK = "#1F2328"
-MUTED = "#4A5360"
-ARROW = "#5B6573"
+INK = "#1A1D21"
+BODY = "#343B45"
+ARROW = "#4F5967"
 
-W, H = 100, 142
-X0, X1 = 15, 98  # zone utile des boîtes
-GAP = 3
+# Tailles de police (pt)
+F_TITLE, F_BODY, F_LANE, F_LEGEND = 13.5, 11, 12, 11
+
+W = 100
+X0, X1 = 12.5, 99  # zone utile des boîtes
+GAP = 2.5
 COL_W = (X1 - X0 - 2 * GAP) / 3
 COLS = [X0 + i * (COL_W + GAP) for i in range(3)]
-HEADER_H = 4.2
+COL_CX = [x + COL_W / 2 for x in COLS]
+FULL_W = X1 - X0
+CX = X0 + FULL_W / 2
+HEADER_H = 5.0
+LINE_H = 2.35  # hauteur d'une ligne de corps de texte (unités)
+PAD_V = 3.4
 
-fig, ax = plt.subplots(figsize=(10, 14.2))
+
+def height(*bodies):
+    return HEADER_H + max(b.count("\n") + 1 for b in bodies) * LINE_H + PAD_V
+
+
+# --- Contenu -----------------------------------------------------------------
+DATA = [
+    ("Pléiades 1A · 2015", "Acquisition : 8 juillet\nMultispectral 2 m · 8 bits\nGéométrie capteur"),
+    ("Pléiades 1A · 2020", "Acquisition : 27 juillet\nMultispectral 2 m · 8 bits\nGéométrie capteur"),
+    ("SuperView Neo-1 · 2024", "Acquisition : 7 juillet\nMultispectral 1,2 m · 11 bits\nNiveau L2A (UTM 18N)"),
+]
+ATCOR = (
+    "1", "Correction atmosphérique — ATCOR (CATALYST Professional)",
+    "MASKING : masques du voile, des nuages et des pixels saturés\n"
+    "HAZEREM : retrait du voile atmosphérique (50 %)  →  ATCOR : réflectance au sol\n"
+    "Modèle été subarctique · visibilité 5 km (2015), 80 km (2020), 40 km (2024)\n"
+    "SuperView Neo-1 : profil spectral SuperView-1 et gains d'étalonnage CRESDA",
+)
+GEOM = (
+    "2", "Correction géométrique (Python — rasterio / GDAL)",
+    "Orthorectification Pléiades : modèle RPC + MNT Copernicus GLO-30\n"
+    "Grille commune UTM 18N à 2 m (SuperView rééchantillonné de 1,2 à 2 m)\n"
+    "Co-recalage sur l'image 2024 par corrélation de phase",
+)
+NORM = (
+    "3", "Normalisation radiométrique relative (Python)",
+    "IR-MAD : sélection de pixels invariants (2015 → 2020 et 2024 → 2020)\n"
+    "Régression orthogonale par bande · correction du gradient spatial du voile (σ = 300 m)\n"
+    "Contrôle sur un échantillon indépendant de pixels invariants",
+)
+ANALYSES = [
+    ("4a", "Histogrammes", "Réflectance par bande\net par date, avant et\naprès normalisation"),
+    ("4b", "NDVI", "5 classes (seuils identiques)\nΔNDVI significatif : |Δ| > 0,10\nTransitions entre classes"),
+    ("4c", "Classification", "K-means multidate (12 grappes)\nRegroupées en 7 classes\nMatrices de transition"),
+]
+RESULTS = [
+    ("Comparabilité", "Distributions superposées\ndes trois dates"),
+    ("Dynamique du couvert", "Cartes NDVI et ΔNDVI\nSuperficie par classe"),
+    ("Changements du milieu", "Cartes des classes\nTrajectoires : thermokarst,\nfermeture du couvert"),
+]
+VALID = (
+    "5", "Validation et interprétation",
+    "Photo-interprétation de 630 points : matrices de confusion et indice kappa\n"
+    "Contexte climatique et phénologique : données ECCC\n"
+    "Discussion : dégel du pergélisol, expansion arbustive, limites et recommandations",
+)
+
+# --- Mise en page verticale (du haut vers le bas) ----------------------------
+h_data = height(*(b for _, b in DATA))
+h_atcor, h_geom, h_norm = height(ATCOR[2]), height(GEOM[2]), height(NORM[2])
+h_an = height(*(b for *_, b in ANALYSES))
+h_res = height(*(b for _, b in RESULTS))
+h_val = height(VALID[2])
+ARROW_GAP, LANE_PAD = 5.0, 2.0
+
+y = 0
+legend_y = y - 3.0
+y -= 6.0
+lanes = []
+lane_top = y
+y -= LANE_PAD
+data_top = y; y -= h_data + LANE_PAD
+lanes.append((lane_top, y, "DONNÉES")); lane_top = y
+y -= ARROW_GAP - LANE_PAD
+atcor_top = y; y -= h_atcor + ARROW_GAP
+geom_top = y; y -= h_geom + ARROW_GAP
+norm_top = y; y -= h_norm
+label_y = y - 2.6
+y -= 5.2
+lanes.append((lane_top, y, "PRÉTRAITEMENT")); lane_top = y
+bus_y = y - 1.0
+y -= 3.2
+an_top = y; y -= h_an + LANE_PAD
+lanes.append((lane_top, y, "ANALYSES")); lane_top = y
+y -= ARROW_GAP - LANE_PAD
+res_top = y; y -= h_res + LANE_PAD
+lanes.append((lane_top, y, "RÉSULTATS")); lane_top = y
+merge_y = y - 1.0
+y -= ARROW_GAP - LANE_PAD
+val_top = y; y -= h_val + LANE_PAD
+lanes.append((lane_top, y, "SYNTHÈSE"))
+y_min = y - 0.8
+
+H = -y_min
+fig, ax = plt.subplots(figsize=(W / 10, H / 10))
 ax.set_xlim(0, W)
-ax.set_ylim(0, H)
+ax.set_ylim(y_min, 0)
 ax.set_aspect("equal")
 ax.axis("off")
 fig.subplots_adjust(0, 0, 1, 1)
 
 
-def box(x, y_top, w, h, kind, title, body, body_size=8.2):
+def box(x, y_top, w, h, kind, title, body, badge=None):
     """Boîte arrondie avec bandeau de titre coloré. Retourne (cx, top, bottom)."""
     edge, head, fill = STYLES[kind]
-    y = y_top - h
-    outline = FancyBboxPatch(
-        (x, y), w, h, boxstyle="round,pad=0,rounding_size=1.4",
-        fc=fill, ec=edge, lw=1.4, zorder=3,
-    )
+    yb = y_top - h
+    outline = FancyBboxPatch((x, yb), w, h, boxstyle="round,pad=0,rounding_size=1.3",
+                             fc=fill, ec=edge, lw=1.6, zorder=3)
     ax.add_patch(outline)
     band = Rectangle((x, y_top - HEADER_H), w, HEADER_H, fc=head, ec="none", zorder=3.1)
     band.set_clip_path(outline)
     ax.add_patch(band)
-    ax.plot([x, x + w], [y_top - HEADER_H] * 2, color=edge, lw=0.8, alpha=0.6, zorder=3.2)
-    ax.text(x + w / 2, y_top - HEADER_H / 2, title, ha="center", va="center",
-            fontsize=10.5, fontweight="bold", color=INK, zorder=4)
-    ax.text(x + w / 2, y + (h - HEADER_H) / 2, body, ha="center", va="center",
-            fontsize=body_size, color=MUTED, linespacing=1.55, zorder=4)
-    return x + w / 2, y_top, y
+    ax.plot([x, x + w], [y_top - HEADER_H] * 2, color=edge, lw=0.9, alpha=0.6, zorder=3.2)
+    ty = y_top - HEADER_H / 2
+    tx = x + w / 2
+    if badge:
+        r = 1.75
+        bx = x + 1.2 + r
+        ax.add_patch(Circle((bx, ty), r, fc=edge, ec="none", zorder=4))
+        ax.text(bx, ty - 0.05, badge, ha="center", va="center", color="white",
+                fontsize=F_BODY - (1.5 if len(badge) > 1 else 0), fontweight="bold", zorder=5)
+        if w < 40:  # colonnes étroites : décaler le titre à droite de la pastille
+            tx = x + (2 * r + 1.2 + w) / 2
+    ax.text(tx, ty, title, ha="center", va="center",
+            fontsize=F_TITLE if w > 40 else F_TITLE - 1,
+            fontweight="bold", color=INK, zorder=4)
+    ax.text(x + w / 2, yb + (h - HEADER_H) / 2, body, ha="center", va="center",
+            fontsize=F_BODY, color=BODY, linespacing=1.5, zorder=4)
+    return x + w / 2, y_top, yb
 
 
 def arrow(x0, y0, x1, y1):
     ax.annotate("", xy=(x1, y1), xytext=(x0, y0), zorder=2,
-                arrowprops=dict(arrowstyle="-|>,head_length=0.55,head_width=0.28",
-                                color=ARROW, lw=1.3, shrinkA=0, shrinkB=0.5))
+                arrowprops=dict(arrowstyle="-|>,head_length=0.6,head_width=0.3",
+                                color=ARROW, lw=1.5, shrinkA=0, shrinkB=0.5))
 
 
 def line(xs, ys):
-    ax.plot(xs, ys, color=ARROW, lw=1.3, solid_capstyle="round", zorder=2)
+    ax.plot(xs, ys, color=ARROW, lw=1.5, solid_capstyle="round", zorder=2)
 
 
-def lane(y_top, y_bot, label, shaded):
-    if shaded:
-        ax.add_patch(Rectangle((1, y_bot), W - 2, y_top - y_bot, fc="#F3F5F8",
-                               ec="none", zorder=0))
-    ax.add_patch(Rectangle((1, y_bot), 1.0, y_top - y_bot, fc="#AEB6C2", ec="none", zorder=1))
-    ax.text(7.5, (y_top + y_bot) / 2, label, rotation=90, ha="center", va="center",
-            fontsize=10, fontweight="bold", color="#5A6472")
-
-
-# --- Titre et légende --------------------------------------------------------
-ax.text(W / 2, 139, "Chaîne de traitement méthodologique", ha="center", va="center",
-        fontsize=15, fontweight="bold", color=INK)
-ax.text(W / 2, 135.6, "Pléiades 1A (2015, 2020) et SuperView Neo-1 (2024) · zone d'étude ≈ 101 ha",
-        ha="center", va="center", fontsize=9.5, color=MUTED, style="italic")
-
-# Largeur réelle de chaque étiquette, mesurée en unités de données
+# --- Légende -----------------------------------------------------------------
 renderer = fig.canvas.get_renderer()
 units_per_px = W / ax.get_window_extent(renderer).width
 items = []
 for kind, label in LEGEND:
-    t = ax.text(0, 0, label, fontsize=8.6)
+    t = ax.text(0, 0, label, fontsize=F_LEGEND)
     items.append((kind, label, t.get_window_extent(renderer).width * units_per_px))
     t.remove()
-SWATCH, PAD, SEP = 2.6, 1.0, 4.0
+SWATCH, PAD, SEP = 3.0, 1.0, 3.8
 total = sum(SWATCH + PAD + w for *_, w in items) + SEP * (len(items) - 1)
 lx = (W - total) / 2
 for kind, label, tw in items:
     edge, head, _ = STYLES[kind]
-    ax.add_patch(FancyBboxPatch((lx, 130.6), SWATCH, 1.8,
-                                boxstyle="round,pad=0,rounding_size=0.4",
-                                fc=head, ec=edge, lw=1.1))
-    ax.text(lx + SWATCH + PAD, 131.5, label, va="center", fontsize=8.6, color=INK)
+    ax.add_patch(FancyBboxPatch((lx, legend_y - 1.05), SWATCH, 2.1,
+                                boxstyle="round,pad=0,rounding_size=0.45",
+                                fc=head, ec=edge, lw=1.2))
+    ax.text(lx + SWATCH + PAD, legend_y, label, va="center", fontsize=F_LEGEND, color=INK)
     lx += SWATCH + PAD + tw + SEP
 
 # --- Bandes de phase ---------------------------------------------------------
-lane(128.5, 110.5, "DONNÉES", True)
-lane(110.5, 55.3, "PRÉTRAITEMENT", False)
-lane(55.3, 38.5, "ANALYSES", True)
-lane(38.5, 21.5, "RÉSULTATS", False)
-lane(21.5, 3.5, "SYNTHÈSE", True)
+for i, (top, bot, label) in enumerate(lanes):
+    if i % 2 == 0:
+        ax.add_patch(Rectangle((0.5, bot), W - 1, top - bot, fc="#F1F3F7", ec="none", zorder=0))
+    ax.add_patch(Rectangle((0.5, bot), 1.0, top - bot, fc="#9EA8B6", ec="none", zorder=1))
+    ax.text(6.2, (top + bot) / 2, label, rotation=90, ha="center", va="center",
+            fontsize=F_LANE, fontweight="bold", color="#4F5967")
 
-# --- Données -----------------------------------------------------------------
-data = [
-    ("Pléiades 1A · 2015", "8 juillet · MS 2 m\n8 bits · géométrie capteur"),
-    ("Pléiades 1A · 2020", "27 juillet · MS 2 m\n8 bits · géométrie capteur"),
-    ("SuperView Neo-1 · 2024", "7 juillet · MS 1,2 m\n11 bits · L2A (UTM 18N)"),
-]
-data_boxes = [box(x, 126.5, COL_W, 14, "data", t, b, 8.6) for x, (t, b) in zip(COLS, data)]
-
-# --- Prétraitement -----------------------------------------------------------
-full_w = X1 - X0
-cx = X0 + full_w / 2
-_, atcor_top, atcor_bot = box(
-    X0, 105.5, full_w, 14.5, "catalyst",
-    "①  Correction atmosphérique — ATCOR (CATALYST Professional)",
-    "MASKING (voile, nuages, saturation)  →  HAZEREM (suppression du voile, 50 %)  →  ATCOR (réflectance au sol)\n"
-    "Été subarctique · visibilité 5 km (2015), 80 km (2020), 40 km (2024)\n"
-    "Profil SuperView-1 + gains CRESDA (2024)",
-)
+# --- Boîtes et liaisons ------------------------------------------------------
+data_boxes = [box(x, data_top, COL_W, h_data, "data", t, b) for x, (t, b) in zip(COLS, DATA)]
+_, _, atcor_bot = box(X0, atcor_top, FULL_W, h_atcor, "catalyst", ATCOR[1], ATCOR[2], ATCOR[0])
 for bx, _, bb in data_boxes:
     arrow(bx, bb, bx, atcor_top)
+_, _, geom_bot = box(X0, geom_top, FULL_W, h_geom, "python", GEOM[1], GEOM[2], GEOM[0])
+arrow(CX, atcor_bot, CX, geom_top)
+_, _, norm_bot = box(X0, norm_top, FULL_W, h_norm, "python", NORM[1], NORM[2], NORM[0])
+arrow(CX, geom_bot, CX, norm_top)
 
-_, geo_top, geo_bot = box(
-    X0, 87.0, full_w, 12, "python",
-    "②  Géométrie (Python — rasterio / GDAL)",
-    "Orthorectification des images Pléiades : modèle RPC + MNT Copernicus GLO-30\n"
-    "Grille commune UTM 18N à 2 m (SuperView agrégé 1,2 → 2 m) · co-recalage sur 2024 (corrélation de phase)",
-)
-arrow(cx, atcor_bot, cx, geo_top)
+line([CX, CX], [norm_bot, bus_y])
+line([COL_CX[0], COL_CX[2]], [bus_y, bus_y])
+for c in COL_CX:
+    arrow(c, bus_y, c, an_top)
+ax.text(CX, label_y, "Réflectances au sol comparables entre les trois dates",
+        ha="center", va="center", fontsize=F_BODY, style="italic", color=INK, zorder=5,
+        bbox=dict(boxstyle="round,pad=0.4,rounding_size=0.9", fc="white", ec="#9EA8B6", lw=1.0))
 
-_, norm_top, norm_bot = box(
-    X0, 71.0, full_w, 12, "python",
-    "③  Normalisation radiométrique relative (Python)",
-    "IR-MAD : pixels invariants 2015→2020 et 2024→2020 · régression orthogonale par bande\n"
-    "Correction de la tendance spatiale du voile (σ = 300 m) · validation sur pixels invariants indépendants",
-)
-arrow(cx, geo_bot, cx, norm_top)
-
-# --- Répartition vers les analyses (bus + étiquette) -------------------------
-bus_y = 54.6
-analyses_top = 52.5
-col_cx = [x + COL_W / 2 for x in COLS]
-line([cx, cx], [norm_bot, bus_y])
-line([col_cx[0], col_cx[2]], [bus_y, bus_y])
-for c in col_cx:
-    arrow(c, bus_y, c, analyses_top)
-ax.text(cx, (norm_bot + bus_y) / 2 + 0.3, "Réflectances au sol comparables",
-        ha="center", va="center", fontsize=8.6, style="italic", color=INK, zorder=5,
-        bbox=dict(boxstyle="round,pad=0.35,rounding_size=0.8", fc="white", ec="#AEB6C2", lw=0.9))
-
-# --- Analyses ----------------------------------------------------------------
-analyses = [
-    ("④a  Histogrammes", "Réflectance par bande\net par date,\navant et après normalisation"),
-    ("④b  NDVI", "5 intervalles (mêmes seuils)\nΔNDVI (|Δ| > 0,10)\nTransitions entre classes"),
-    ("④c  Classification", "K-means multidate (12 grappes)\n→ 7 classes thématiques\nMatrices de transition"),
-]
-an_boxes = [box(x, analyses_top, COL_W, 12.5, "python", t, b)
-            for x, (t, b) in zip(COLS, analyses)]
-
-# --- Résultats ---------------------------------------------------------------
-results = [
-    ("Comparabilité", "Distributions superposées\ndes 3 dates"),
-    ("Dynamique du couvert", "Cartes NDVI et ΔNDVI\nSuperficies par classe"),
-    ("Changements du milieu", "Cartes des classes\nTrajectoires (thermokarst,\nfermeture du couvert)"),
-]
-res_boxes = [box(x, 36.0, COL_W, 12.5, "result", t, b) for x, (t, b) in zip(COLS, results)]
+an_boxes = [box(x, an_top, COL_W, h_an, "python", t, b, n)
+            for x, (n, t, b) in zip(COLS, ANALYSES)]
+res_boxes = [box(x, res_top, COL_W, h_res, "result", t, b) for x, (t, b) in zip(COLS, RESULTS)]
 for (ax_, _, ab), (_, rt, _) in zip(an_boxes, res_boxes):
     arrow(ax_, ab, ax_, rt)
 
-# --- Validation --------------------------------------------------------------
-val_top = 18.5
-_, _, _ = box(
-    X0, val_top, full_w, 13, "valid",
-    "⑤  Validation et interprétation",
-    "Photo-interprétation de 630 points (matrices de confusion, kappa) · données climatiques ECCC (phénologie)\n"
-    "Discussion : dégel du pergélisol, expansion arbustive, limites et recommandations",
-)
-merge_y = 20.9
+box(X0, val_top, FULL_W, h_val, "valid", VALID[1], VALID[2], VALID[0])
 for rx, _, rb in res_boxes:
     line([rx, rx], [rb, merge_y])
-line([col_cx[0], col_cx[2]], [merge_y, merge_y])
-arrow(cx, merge_y, cx, val_top)
+line([COL_CX[0], COL_CX[2]], [merge_y, merge_y])
+arrow(CX, merge_y, CX, val_top)
 
 out = Path(__file__).with_suffix("")
 for ext in ("png", "svg", "pdf"):
     fig.savefig(f"{out}.{ext}", dpi=300, facecolor="white")
-print("OK")
+print("OK", round(W / 10, 1), "x", round(H / 10, 1), "po")
