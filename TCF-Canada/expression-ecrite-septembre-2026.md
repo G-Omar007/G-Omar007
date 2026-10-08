@@ -8,7 +8,7 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 |---|---|---|---|---|
 | **Tâche 1** – Message | Salutation → Raison du message → Informations principales (1, 2, 3) → Conclusion | Sois simple et clair, pas de phrases trop longues | 60–120 | ~10 min |
 | **Tâche 2** – Récit | Contexte → Événements (Tout d'abord, Ensuite, Après cela, Enfin) → Détails → Résultat / opinion | Raconte dans l'ordre chronologique, relie avec des connecteurs | 120–150 | ~20 min |
-| **Tâche 3** – Opinion | Résumé des 2 documents → Opinion → Argument 1 + Exemple → Argument 2 + Exemple → Nuance → Conclusion | Phrases courtes, toujours un exemple concret | 120–180 | ~30 min |
+| **Tâche 3** – Opinion | Titre + petite introduction → Résumé des 2 documents → Opinion → Argument 1 + Exemple → Argument 2 + Exemple → Nuance → Conclusion | Phrases courtes, toujours un exemple concret | 120–180 | ~30 min |
 
 > **La règle d'or :** AFFIRMER → EXPLIQUER → ILLUSTRER — « Je pense que… En effet… Par exemple… Cependant… En conclusion… »
 
@@ -51,8 +51,12 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 ### Tâche 3 – Vivre chez ses parents, pour ou contre ?
 
-**Partie 1 – Résumé des documents**
+**Partie 1 – Titre, introduction et résumé des documents**
 
+> **Vivre chez ses parents : pour ou contre ?**
+>
+> *Aujourd'hui, beaucoup de jeunes restent chez leurs parents, mais ce choix divise l'opinion.*
+>
 > Le premier document présente les avantages de vivre chez ses parents : les jeunes économisent le loyer et la nourriture, et profitent d'un certain confort. En revanche, le second document souligne le manque de liberté et d'intimité : certains jeunes se sentent dépendants et voient ce choix comme un retour en arrière.
 
 **Partie 2 – Mon opinion**
@@ -99,8 +103,12 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 ### Tâche 3 – Les animaux de compagnie pour les enfants
 
-**Partie 1 – Résumé des documents**
+**Partie 1 – Titre, introduction et résumé des documents**
 
+> **Un animal pour les enfants : bonne ou mauvaise idée ?**
+>
+> *Beaucoup d'enfants rêvent d'avoir un animal, mais ce cadeau fait débat chez les parents.*
+>
 > Le premier document présente les avantages d'un animal de compagnie pour un enfant : il évite la solitude, donne confiance et apprend le respect des êtres vivants. Toutefois, le second document rappelle qu'un animal coûte cher, demande un engagement de plusieurs années et représente une grande responsabilité.
 
 **Partie 2 – Mon opinion**
@@ -145,8 +153,12 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 ### Tâche 3 – Les jeux vidéo, pour ou contre ?
 
-**Partie 1 – Résumé des documents**
+**Partie 1 – Titre, introduction et résumé des documents**
 
+> **Les jeux vidéo : utiles ou dangereux ?**
+>
+> *Les jeux vidéo sont très populaires, mais leurs effets divisent l'opinion.*
+>
 > Selon le premier document, les jeux vidéo peuvent développer le cerveau des adultes : ils améliorent l'analyse, la prise de décision et la rapidité de réaction. En revanche, le second document montre que les enfants qui jouent beaucoup sont plus violents, plus stressés et ont de moins bons résultats scolaires.
 
 **Partie 2 – Mon opinion**
@@ -195,8 +207,12 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 ### Tâche 3 – La restauration rapide
 
-**Partie 1 – Résumé des documents**
+**Partie 1 – Titre, introduction et résumé des documents**
 
+> **La restauration rapide : pratique ou dangereuse ?**
+>
+> *Le fast-food fait partie de notre quotidien, mais il est souvent critiqué.*
+>
 > Le premier document défend la restauration rapide : les plats sont variés, l'hygiène est respectée et le client choisit son menu. Au contraire, le second document affirme que manger souvent dans un fast-food est dangereux pour la santé, à cause des calories, et nuisible pour l'environnement, à cause des déchets plastiques.
 
 **Partie 2 – Mon opinion**
@@ -238,8 +254,12 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 ### Tâche 3 – L'art urbain, pour ou contre ?
 
-**Partie 1 – Résumé des documents**
+**Partie 1 – Titre, introduction et résumé des documents**
 
+> **L'art urbain : art ou vandalisme ?**
+>
+> *L'art urbain est de plus en plus présent dans nos villes, mais il ne plaît pas à tout le monde.*
+>
 > Le premier document présente l'art urbain comme une richesse : il éveille la curiosité, crée des rencontres entre artistes et habitants et embellit la ville. En revanche, le second document explique que les graffitis sont souvent perçus comme du vandalisme, une pollution visuelle qui dégrade les biens publics.
 
 **Partie 2 – Mon opinion**
