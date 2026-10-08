@@ -55,13 +55,13 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 > **Vivre chez ses parents : pour ou contre ?**
 >
-> *Aujourd'hui, beaucoup de jeunes restent chez leurs parents, mais ce choix divise l'opinion.*
+> *Beaucoup de jeunes restent chez leurs parents, mais ce choix divise l'opinion.*
 >
 > Le premier document présente les avantages de vivre chez ses parents : les jeunes économisent le loyer et la nourriture, et profitent d'un certain confort. En revanche, le second document souligne le manque de liberté et d'intimité : certains jeunes se sentent dépendants et voient ce choix comme un retour en arrière.
 
 **Partie 2 – Mon opinion**
 
-> À mon avis, vivre chez ses parents est une bonne solution, mais seulement pour une période limitée. Tout d'abord, c'est un choix économique. Par exemple, un étudiant qui ne paie pas de loyer peut économiser pour ses études ou un projet. Ensuite, l'indépendance est importante pour devenir adulte. Par exemple, quand on vit seul, on apprend à gérer un budget, à cuisiner et à prendre ses propres décisions. Cependant, cela dépend de la situation de chacun : après une perte d'emploi, retourner chez ses parents peut être une aide précieuse. En conclusion, je pense que les jeunes peuvent rester chez leurs parents pendant leurs études, mais ensuite, ils doivent partir pour construire leur propre vie.
+> À mon avis, vivre chez ses parents est une bonne solution, mais seulement pour une période limitée. Tout d'abord, c'est un choix économique. Par exemple, un étudiant qui ne paie pas de loyer peut économiser pour ses études ou un projet. Ensuite, l'indépendance est importante pour devenir adulte. Par exemple, quand on vit seul, on apprend à gérer un budget et à prendre ses décisions. Cependant, cela dépend de la situation de chacun : après une perte d'emploi, retourner chez ses parents peut être une aide précieuse. En conclusion, je pense que les jeunes peuvent rester chez leurs parents pendant leurs études, mais ensuite, ils doivent devenir autonomes.
 
 ---
 
@@ -217,7 +217,7 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 **Partie 2 – Mon opinion**
 
-> À mon avis, la restauration rapide est pratique, mais elle ne doit pas devenir une habitude. Tout d'abord, elle répond à un besoin réel. Par exemple, un étudiant ou un travailleur pressé peut manger vite et pour pas cher. Ensuite, elle pose un vrai problème de santé si on en mange trop souvent. Par exemple, un menu avec hamburger, frites et boisson sucrée dépasse souvent 1 000 calories. Cependant, cela dépend des choix du client : aujourd'hui, beaucoup de fast-foods proposent aussi des salades et de l'eau. En conclusion, je pense qu'on peut aller au fast-food de temps en temps, mais il vaut mieux privilégier les repas faits maison.
+> À mon avis, la restauration rapide est pratique, mais elle ne doit pas devenir une habitude. Tout d'abord, elle répond à un besoin réel. Par exemple, un étudiant ou un travailleur pressé peut manger vite et pour pas cher. Ensuite, elle pose un vrai problème de santé si on en mange trop souvent. Par exemple, un menu avec hamburger, frites et boisson sucrée dépasse souvent 1 000 calories. Cependant, cela dépend des choix du client : beaucoup de fast-foods proposent aussi des salades et de l'eau. En conclusion, je pense qu'on peut aller au fast-food de temps en temps, mais il vaut mieux privilégier les repas faits maison.
 
 ---
 
@@ -258,10 +258,10 @@ Textes rédigés en appliquant la **fiche mémo** (structure + phrases modèles 
 
 > **L'art urbain : art ou vandalisme ?**
 >
-> *L'art urbain est de plus en plus présent dans nos villes, mais il ne plaît pas à tout le monde.*
+> *L'art urbain est de plus en plus présent dans nos villes, mais il divise l'opinion.*
 >
 > Le premier document présente l'art urbain comme une richesse : il éveille la curiosité, crée des rencontres entre artistes et habitants et embellit la ville. En revanche, le second document explique que les graffitis sont souvent perçus comme du vandalisme, une pollution visuelle qui dégrade les biens publics.
 
 **Partie 2 – Mon opinion**
 
-> À mon avis, l'art urbain est une bonne chose quand il est autorisé. Tout d'abord, il rend la culture accessible à tous. Par exemple, une personne qui ne va jamais au musée peut admirer une fresque en allant au travail. Ensuite, il transforme des quartiers tristes. Par exemple, à Montréal, le festival MURAL a couvert de couleurs les murs gris du boulevard Saint-Laurent. Cependant, les tags faits sans permission sur les maisons ou les monuments ne sont pas de l'art : ils coûtent cher à nettoyer. En conclusion, je pense que les villes doivent offrir des murs légaux aux artistes pour encourager la création et limiter le vandalisme.
+> À mon avis, l'art urbain est une bonne chose quand il est autorisé. Tout d'abord, il rend la culture accessible à tous. Par exemple, une personne qui ne va jamais au musée peut admirer une fresque en allant au travail. Ensuite, il transforme des quartiers tristes. Par exemple, à Montréal, le festival MURAL a couvert de couleurs les murs gris du boulevard Saint-Laurent. Cependant, les tags faits sans permission sur les monuments ne sont pas de l'art : ils coûtent cher à nettoyer. En conclusion, je pense que les villes doivent offrir des murs légaux aux artistes pour encourager la création et limiter le vandalisme.
