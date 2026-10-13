@@ -8153,6 +8153,119 @@ var MEM = {
  ]
 };
 
+// Grammaire, syntaxe et lexique des sujets. Chaque carte : [recto, verso, filtre (trouve les phrases d'exemple), soulignement]
+var MEM_GRAM = [
+ {id:'grammaire', name:'Grammaire', cards:[
+  ['Récit (EE T2) : passé composé ou imparfait ?','Passé composé = les actions qui font avancer le récit (j\'ai visité, nous sommes partis). Imparfait = le décor, la description, les émotions (il faisait beau, j\'étais ému).',
+    /\b(j'ai|nous avons|il a|on a|ils ont|je suis|nous sommes|je me suis|nous nous sommes)\s+(?!plus\b|pas\b|aussi\b|ici\b)[a-zàâçéèêëîïôûù]+(é|ée|és|ées|i|is|it|u|ue|us)\b|\b(étais|était|étaient|avais|avait|faisait|semblait|riait|regardait|allumais|endormais|pensais|savais|sentais|connaissais)\b/i,
+    /\b(j'ai|j’ai|nous avons|il a|elle a|on a|ils ont|je suis|nous sommes|il est|elle est|je me suis|nous nous sommes)\s+(?!plus\b|pas\b|aussi\b|ici\b)[a-zàâçéèêëîïôûù]+(é|ée|és|ées|i|is|it|u|ue|us)\b|\b(étais|était|étaient|avais|avait|faisait|parlait|semblait|riait|couraient|regardait|allumais|endormais|allais|pensais|savais|sentais|connaissais)\b/gi],
+  ['Accord du participe passé avec ÊTRE','Avec être, le participe s\'accorde avec le sujet : je suis parti(e), nous sommes arrivé(e)s, elle est venue. Verbes de mouvement : aller, venir, partir, arriver, rester, rentrer, monter, tomber, naître…',
+    /\b(suis|es|est|sommes|êtes|sont|étais|était)\s+((parti|arrivé|allé|venu|resté|rentré|monté|tombé|retourné|devenu|sorti)(e|s|es)?|née?s?)\b/i,
+    /\b(suis|es|est|sommes|êtes|sont|étais|était)\s+((parti|arrivé|allé|venu|resté|rentré|monté|tombé|retourné|devenu|sorti)(e|s|es)?|née?s?)\b/gi],
+  ['Futur proche ou futur simple ? (invitation, projet)','Futur proche (aller + infinitif) = action proche, sûre : je vais m\'inscrire. Futur simple = projet, programme : l\'événement aura lieu, on pourra se promener, je viendrai te chercher.',
+    /\b(vais|vas|va|allons|allez|vont)\s+\w+(er|ir|re)\b|\b(aura|sera|seras|pourra|pourrons|pourrez|viendrai|viendra|ferons|fera|partira|commencera|prendrai|irons|verra|dormira)\b/i,
+    /\b(vais|vas|va|allons|allez|vont)\s+[a-zàâçéèêëîïôûù]+(er|ir|re)\b|\b(aura|sera|seras|pourra|pourrons|pourrez|viendrai|viendra|ferons|fera|partira|commencera|prendrai|irons|verra|dormira|aimerais)\b/gi],
+  ['L\'impératif (consignes, conseils)','Pour donner des instructions : 2e personne sans « tu » ni « vous ». Arrose les plantes. Prends l\'autobus. N\'oublie pas… Pour les verbes en -er, pas de « s » : Arrose (pas « arroses »).',
+    /\b(Arrose|Prends|Donne|Relève|Sors|Ferme|Apporte|Réponds|Dis|Sers|Pense|N'oublie|Viens|Écris|Prenez|Répondez|Pensez|N'hésitez|N'hésite|Tape|Prends-moi|Dites)\b/,
+    /\b(Arrose|Prends|Donne|Relève|Sors|Ferme|Apporte|Réponds|Dis|Sers|Pense|N['’]oublie|Viens|Écris|Prenez|Répondez|Pensez|N['’]hésitez|N['’]hésite|Tape|Dites|Sers-toi|Écris-moi|Dis-moi)\b/g],
+  ['Le conditionnel de politesse','Pour demander poliment : je voudrais, j\'aimerais, pourriez-vous, serait-il possible… Pour un souhait : j\'aimerais travailler au Québec. Pour une hypothèse : ce serait une bonne idée.',
+    /\b(voudrais|aimerais|aimerait|pourrais|pourriez|pourrait|souhaiterais|serait|devrait|faudrait|aurais|pourrions|dirait)\b/i,
+    /\b(voudrais|aimerais|aimerait|pourrais|pourriez|pourrait|souhaiterais|serait|devrait|faudrait|aurais|pourrions|dirait)\b/gi],
+  ['Pronoms relatifs : qui, que, où, dont','qui = sujet (un ami qui habite…) · que = complément (le roman que tu m\'as prêté) · où = lieu ou temps (la ville où j\'habite) · dont = verbe + de (ce dont j\'ai besoin). Un seul pronom : ✕ « que je l\'ai aimé ».',
+    /\s(où|dont)\s|[a-zàâçéèêëîïôûù]{3,}\s(qui)\s/,
+    /(?<=\s)(qui|où|dont)(?=\s)/g],
+  ['Le subjonctif après certaines expressions','Il faut que, pour que, à condition que, bien que, avant que + subjonctif : il faut que tu viennes ; à condition que toute la famille soit prête ; pour que je m\'organise.',
+    /(il faut que|pour que|à condition que|bien que|avant que|en sorte que)/i,
+    /(il faut que|pour que|à condition que|bien que|avant que)\s+\S+\s*\S*/gi],
+  ['Le comparatif et le superlatif','plus / moins / aussi + adjectif + que : moins cher que, plus sûr. Superlatif : le plus important, la plus difficile. Irréguliers : meilleur, mieux, pire.',
+    /\b(plus|moins|aussi)\s+\w+\s+(que|qu')|\b(le|la|les)\s+(plus|moins)\s+(?!les\b|le\b|la\b|de\b|des\b|du\b)\w+|\b(meilleur|meilleure|mieux)\b/i,
+    /\b(plus|moins|aussi)\s+[a-zàâçéèêëîïôûù]+\s+(que|qu['’])|\b(le|la|les)\s+(plus|moins)\s+(?!les\b|le\b|la\b|de\b|des\b|du\b)[a-zàâçéèêëîïôûù]+|\b(meilleur|meilleure|mieux)\b/gi],
+  ['La négation','ne + verbe + pas / jamais / plus / rien / personne. À l\'écrit, ne jamais oublier « ne » : je ne connaissais personne ; on ne doit pas… Avec infinitif : pour ne pas oublier.',
+    /\b(ne|n')\s?\w+\s+(pas|jamais|plus|rien|personne)\b/i,
+    /\b(ne|n['’])\s?[a-zàâçéèêëîïôûù]+\s+(pas|jamais|plus|rien|personne)\b/gi],
+  ['Prépositions devant les villes et les pays','à + ville (à Sherbrooke) · en + pays féminin (en Algérie, en France) · au + pays masculin (au Canada, au Québec, au Maroc) · aux + pluriel (aux États-Unis).',
+    /\b(à|au|aux|en)\s+(Sherbrooke|Montréal|Québec|Lyon|Toronto|Mexico|Magog|Beyrouth|Algérie|Canada|Maroc|Mexique|France|Pérou|Argentine|Asie|Europe|Laos|États-Unis|Cuba)/,
+    /\b(à|au|aux|en)\s+(Sherbrooke|Montréal|Québec|Lyon|Toronto|Mexico|Magog|Beyrouth|Algérie|Canada|Maroc|Mexique|France|Pérou|Argentine|Asie|Europe|Laos|États-Unis|Cuba)/g],
+  ['Le gérondif (en + -ant)','Deux actions en même temps, ou la manière : en allant au travail, en jouant, en partageant. Même sujet pour les deux verbes.',
+    /\ben\s+\w+ant\b/i, /\ben\s+[a-zàâçéèêëîïôûù]+ant\b/gi],
+  ['Poser une question (EO T2)','3 façons : intonation (Tu viens ?) · est-ce que (Est-ce que je peux… ?) · inversion, plus soutenue (Pouvez-vous… ? Faut-il… ? Y a-t-il… ?). Avec un mot interrogatif : Combien coûte… ? À quelle heure… ?',
+    /\?/, /\b[A-ZÀ-Ÿa-zà-ÿ]+-(vous|tu|il|elle|on|t-il|t-elle|ils)\b|Est-ce que|est-ce qu['’]|Combien|Quels?|Quelles?|Où|Quand|Comment|Pourquoi/g]
+ ]},
+ {id:'syntaxe', name:'Syntaxe', cards:[
+  ['Exprimer la cause','parce que + verbe · car (à l\'écrit) · puisque (cause connue) · grâce à (cause positive) · à cause de (cause négative) + nom.',
+    /\b(parce que|parce qu'|car|puisque|grâce à|grâce au|à cause de|à cause du)\b/i, /\b(parce que|parce qu['’]|car|puisque|grâce à|grâce au|à cause de|à cause du)\b/gi],
+  ['Exprimer la conséquence','donc · alors · c\'est pourquoi · par conséquent · si bien que · ce qui + verbe.',
+    /\b(donc|alors|c'est pourquoi|par conséquent|si bien que|ainsi)\b/i, /\b(donc|alors|c['’]est pourquoi|par conséquent|si bien que|ainsi)\b/gi],
+  ['Exprimer le but','pour + infinitif (pour économiser) · afin de + infinitif · pour que + subjonctif (pour que je m\'organise).',
+    /\b(pour|afin de|afin d')\s+(ne pas\s+)?\w+(er|ir|re|oir)\b|pour que/i, /\b(pour|afin de|afin d['’])\s+(ne pas\s+)?[a-zàâçéèêëîïôûù]+(er|ir|re|oir)\b|pour que/gi],
+  ['Exprimer la condition','si + présent → futur ou présent : Si vous en avez l\'occasion, n\'hésitez pas. · à condition que + subjonctif · à condition de + infinitif.',
+    /(^|[^ê]me |[^m]\S* |^)(Si|si|S'il|s'il)\s+\w+|à condition/, /(?<!même )\b(si|s['’]il)\b|à condition (que|de)/gi],
+  ['Exprimer la concession','même si + indicatif · bien que + subjonctif · certes… mais… · il est vrai que… cependant…',
+    /\b(même si|bien que|certes|il est vrai que|pourtant)\b/i, /\b(même si|bien que|certes|il est vrai que|pourtant)\b/gi],
+  ['La mise en relief','Ce qui… c\'est… / Ce que… c\'est… : Ce que j\'ai le plus aimé, c\'est l\'esprit d\'équipe. Ce qui m\'a vraiment plu, c\'est l\'attention du personnel.',
+    /\bCe (qui|que|qu')\b.*c'est/i, /\bCe (qui|que|qu['’])\b|c['’]est/gi],
+  ['La phrase courte et bien ponctuée','Deux propositions maximum par phrase. Une virgule après chaque connecteur en début de phrase : « Tout d\'abord, … » · « Par exemple, … ».',
+    /^(Tout d'abord|Ensuite|Après cela|Enfin|Cependant|Par exemple|En conclusion|De plus|En revanche|Néanmoins|Toutefois),/, /^(Tout d['’]abord|Ensuite|Après cela|Enfin|Cependant|Par exemple|En conclusion|De plus|En revanche|Néanmoins|Toutefois),/g],
+  ['Les deux-points pour annoncer','Deux-points (:) pour annoncer une liste ou une explication : « Le thème : les années 80 » · « une nuit dans le Sahara : des dunes immenses… ».',
+    /\s:\s/, /\s:\s/g],
+  ['Reprendre sans répéter','Pronoms (le, la, les, lui, y, en), celui-ci / ce dernier, ou un synonyme : l\'animal → il, ce compagnon ; les jeunes → cette génération.',
+    /\b(il|elle|ils|elles)\s+(est|sont|apprend|permet|rend|coûte|aide|donne|développe|devient)\b/i, /\b(il|elle|ils|elles|celui-ci|celle-ci|ce dernier|cette dernière)\b/gi]
+ ]},
+ {id:'lexique', name:'Lexique par thème', cards:[
+  ['Lexique · Logement','le loyer · le bail · un 3 ½ / 4 ½ · meublé · le chauffage inclus · le quartier · le colocataire · la colocation · emménager · déménager · visiter · disponible à partir du…',
+    /\b(loyer|bail|meublé|chauffage|quartier|colocataire|colocation|emménag\w*|déménag\w*|appartement|logement|immeuble)\b/i, /\b(loyers?|bail|meublée?s?|chauffage|quartiers?|colocataires?|colocation|emménag\w*|déménag\w*|appartements?|logements?|immeubles?)\b/gi],
+  ['Lexique · Voyage et loisirs','le séjour · l\'hébergement · réserver · une excursion · une randonnée · le dépaysement · découvrir · inoubliable · le paysage · la destination',
+    /\b(séjour|hébergement|réserv\w*|excursion|randonnée|paysage|destination|découvr\w*|voyag\w*|vacances|hôtel)\b/i, /\b(séjours?|hébergements?|réserv\w*|excursions?|randonnées?|paysages?|destinations?|découvr\w*|voyag\w*|vacances|hôtels?)\b/gi],
+  ['Lexique · Travail et emploi','l\'emploi · le poste · le collègue · le salaire · l\'entretien d\'embauche · embaucher · le télétravail · l\'épuisement professionnel · la formation · les compétences',
+    /\b(emploi|poste|collègue|salaire|entretien|embauch\w*|télétravail|formation|compétences?|carrière|métier|travaill\w*)\b/i, /\b(emplois?|postes?|collègues?|salaires?|entretiens?|embauch\w*|télétravail|formations?|compétences?|carrières?|métiers?|travaill\w*)\b/gi],
+  ['Lexique · Études et école','le cours · l\'université · la maîtrise · l\'inscription · s\'inscrire · le diplôme · l\'élève · l\'enseignant · les devoirs · les résultats scolaires',
+    /\b(cours|université|maîtrise|inscri\w*|diplôme|élèves?|enseignant|devoirs|scolaire|école|études)\b/i, /\b(cours|universités?|maîtrise|inscri\w*|diplômes?|élèves?|enseignants?|devoirs|scolaires?|écoles?|études)\b/gi],
+  ['Lexique · Alimentation','le repas · un plat · équilibré · les calories · végétarien · la restauration rapide · fait maison · les produits locaux · les protéines · goûter',
+    /\b(repas|plats?|équilibr\w*|calories|végétarien\w*|restauration|fait maison|faits maison|produits locaux|protéines|goût\w*|viande|cuisin\w*)\b/i, /\b(repas|plats?|équilibr\w*|calories|végétarien\w*|restauration|faits? maison|produits locaux|protéines|goût\w*|viande|cuisin\w*)\b/gi],
+  ['Lexique · Écrans et technologie','l\'écran · les réseaux sociaux · le téléphone portable · Internet · la dépendance · le cyberharcèlement · en ligne · une application · l\'intelligence artificielle',
+    /\b(écrans?|réseaux sociaux|téléphones?|Internet|dépendance|cyberharcèlement|en ligne|applications?|intelligence artificielle|jeux vidéo|télévision)\b/i, /\b(écrans?|réseaux sociaux|téléphones?|Internet|dépendance|cyberharcèlement|en ligne|applications?|intelligence artificielle|jeux vidéo|télévision)\b/gi],
+  ['Lexique · Environnement','la pollution · trier ses déchets · recycler · les gaz à effet de serre · l\'énergie · protéger · la planète · les espèces menacées · les transports en commun',
+    /\b(pollu\w*|déchets|recycl\w*|gaz à effet de serre|énergie|planète|environnement|espèces|transports en commun|trier|protég\w*|protéger)\b/i, /\b(pollu\w*|déchets|recycl\w*|gaz à effet de serre|énergies?|planète|environnement|espèces|transports en commun|trier|protég\w*)\b/gi],
+  ['Lexique · Santé et bien-être','la santé · le sommeil · le stress · faire du sport · une maladie · l\'obésité · le bien-être · se détendre · l\'équilibre',
+    /\b(santé|sommeil|stress|sport|maladies?|obésité|bien-être|détend\w*|équilibre|fatigu\w*)\b/i, /\b(santé|sommeil|stress\w*|sports?|maladies?|obésité|bien-être|détend\w*|équilibre|fatigu\w*)\b/gi],
+  ['Lexique · Immigration et intégration','s\'intégrer · le pays d\'accueil · les démarches · s\'adapter · la culture d\'origine · s\'installer · la reconnaissance des diplômes · l\'expérience canadienne',
+    /\b(intégr\w*|pays d'accueil|démarches|adapt\w*|culture|install\w*|immigr\w*|étranger|reconnaissance)\b/i, /\b(intégr\w*|pays d['’]accueil|démarches|adapt\w*|cultures?|install\w*|immigr\w*|étrangers?|reconnaissance)\b/gi],
+  ['Verbes d\'opinion à varier','penser · estimer · considérer · trouver · croire · être convaincu que · partager l\'avis de · être favorable / opposé à',
+    /\b(pense|pensent|estime|estiment|considère|considèrent|trouve|crois|convaincu|partage|favorable|opposé)\b/i, /\b(pense|pensent|estime|estiment|considère|considèrent|trouve|crois|convaincue?|partage|favorable|opposée?)\b/gi],
+  ['Adjectifs pour apprécier','enrichissant · inoubliable · chaleureux · passionnant · impressionnant · magnifique · décevant · exigeant · agréable · concret',
+    /\b(enrichissant\w*|inoubliable|chaleureu\w*|passionnant\w*|impressionnant\w*|magnifique|décevant\w*|exigeant\w*|agréable|concret\w*|délicieu\w*|excellent\w*)\b/i, /\b(enrichissant\w*|inoubliables?|chaleureu\w*|passionnant\w*|impressionnant\w*|magnifiques?|décevant\w*|exigeant\w*|agréables?|concret\w*|délicieu\w*|excellent\w*)\b/gi],
+  ['Synonymes pour éviter les répétitions','avantage → atout, bénéfice · inconvénient → limite, frein · important → essentiel, primordial · beaucoup → considérablement · montrer → souligner, mettre en avant',
+    /\b(avantages?|atouts?|bénéfices?|inconvénients?|limites?|essentiel\w*|primordial\w*|souligne\w*|met en avant|mettent en avant)\b/i, /\b(avantages?|atouts?|bénéfices?|inconvénients?|limites?|essentiel\w*|primordial\w*|souligne\w*|met en avant|mettent en avant)\b/gi]
+ ]}
+];
+var MEM_GRAM_CLOZE = [
+ ['Grammaire','L\'été dernier, je suis [parti] avec deux amis. (partir, passé composé, sujet masculin)'],
+ ['Grammaire','Nous sommes [arrivés] au lever du soleil. (arriver, sujet masculin pluriel)'],
+ ['Grammaire','Le ciel [était] magnifique et l\'ambiance très calme. (être, imparfait : description)'],
+ ['Grammaire','Un guide nous [a] emmenés jusqu\'au campement. (avoir, passé composé)'],
+ ['Grammaire','L\'événement [aura] lieu samedi à 14 h. (avoir, futur simple)'],
+ ['Grammaire','Je [vais] m\'inscrire cette semaine. (futur proche)'],
+ ['Grammaire','[Arrose] les plantes tous les deux jours. (arroser, impératif, tu)'],
+ ['Grammaire','Je [voudrais] quelques renseignements, s\'il vous plaît. (vouloir, conditionnel de politesse)'],
+ ['Grammaire','C\'est le roman [que] tu m\'as prêté. (pronom relatif)'],
+ ['Grammaire','C\'est la ville [où] j\'habite depuis deux ans. (pronom relatif)'],
+ ['Grammaire','C\'est l\'information [dont] j\'ai besoin. (pronom relatif)'],
+ ['Grammaire','Il faut que tu [viennes] avant 18 h. (venir, subjonctif)'],
+ ['Grammaire','À condition que toute la famille [soit] prête. (être, subjonctif)'],
+ ['Grammaire','Voyager à plusieurs est moins cher [que] voyager seul. (comparatif)'],
+ ['Grammaire','Je ne connaissais [personne] en arrivant. (négation)'],
+ ['Grammaire','J\'habite [à] Sherbrooke, [au] Québec. (préposition — écrivez la 1re)'],
+ ['Grammaire','Je suis originaire d\'Algérie : je suis né [en] Algérie. (préposition + pays)'],
+ ['Grammaire','On peut admirer une fresque [en] allant au travail. (gérondif)'],
+ ['Syntaxe','Je suis venu au Québec [parce] que la recherche y est reconnue. (cause)'],
+ ['Syntaxe','J\'ai économisé [pour] acheter une voiture. (but)'],
+ ['Syntaxe','[Même] si c\'est difficile, l\'expérience est enrichissante. (concession)'],
+ ['Syntaxe','Ce que j\'ai le plus aimé, [c\'est] l\'esprit d\'équipe. (mise en relief)'],
+ ['Lexique','Le [loyer] est de 1 400 $ par mois, chauffage inclus. (logement)'],
+ ['Lexique','Il faut trier ses [déchets] pour protéger la planète. (environnement)'],
+ ['Lexique','Cette expérience a été très [enrichissante]. (adjectif d\'appréciation)']
+];
+
 (function(){
   var root = document.getElementById('mem-root'); if (!root) return;
   var KEY = 'tcf-mem-v1', st = {};
@@ -8161,6 +8274,8 @@ var MEM = {
   function save(){ try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){} }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  MEM.decks = MEM.decks.concat(MEM_GRAM.map(function(d){ return {id:d.id, name:d.name, cards:d.cards.map(function(c){ return [c[0],c[1]]; })}; }));
+  MEM.cloze = MEM.cloze.concat(MEM_GRAM_CLOZE);
   var CARDS = [];
   MEM.decks.forEach(function(d){ d.cards.forEach(function(c,i){ CARDS.push({id:d.id+'-'+i, deck:d.id, f:c[0], b:c[1]}); }); });
 
@@ -8202,6 +8317,11 @@ var MEM = {
     'pieges-0':[['e1','e2'],[],/(^|\s)à\s/,null,/(?<=^|\s)(à|a)(?=\s)/g], 'pieges-1':[ARG,P2], 'pieges-2':[['e3'],[]], 'pieges-4':[['e1'],['Conclusion']],
     'pieges-7':[ARG.concat(['e1','e2']),[],/aider à|parler de|chargé de|besoin de/,null,/aider à|parler de|chargé de|besoin de/g]
   };
+  var SENT_TASKS = ['e1','e2','e3','o1','b1','o3','b3','o2','b2'];
+  // \b ne reconnaît pas les lettres accentuées : on le remplace par une limite de mot Unicode
+  var WB = '(?:(?<![\\p{L}\\p{N}_])(?=[\\p{L}\\p{N}_])|(?<=[\\p{L}\\p{N}_])(?![\\p{L}\\p{N}_]))';
+  function U(rx){ var f = rx.flags.indexOf('u') < 0 ? rx.flags + 'u' : rx.flags; return new RegExp(rx.source.split('\\b').join(WB).replace(/\\w/g, '[\\p{L}\\p{N}_]'), f); }
+  MEM_GRAM.forEach(function(d){ d.cards.forEach(function(c,i){ EXS[d.id+'-'+i] = [SENT_TASKS, [], U(c[2]), 's', U(c[3])]; }); });
   function allParts(t,d){ if (t==='o2' || t==='b2') return [['Ouverture',d.o]].concat(d.q.map(function(x){ return ['Questions', x[1], x[0]]; })).concat([['Relancer la conversation',d.r],['Conclure',d.f]]); return d.p; }
   var POOL = {};
   function poolFor(id){
@@ -8211,6 +8331,12 @@ var MEM = {
     sp[0].forEach(function(t){ SRC[t].forEach(function(d, idx){
       var n = (t==='o1'||t==='b1') ? idx : d.n, cons = (t==='o1'||t==='b1') ? d.q : d.c;
       if (sp[3]==='c') { out.push({t:t, n:n, c:cons, ps:[]}); return; }
+      if (sp[3]==='s') {
+        var sents = [];
+        allParts(t,d).forEach(function(p){ if (p[0]==='Titre') return; p[1].split(/(?<=[.!?])\s+|\n/).forEach(function(x){ x = x.trim(); if (x && sp[2].test(x) && sents.length < 2) sents.push([p[2] ? p[2]+' →' : p[0], x]); }); });
+        if (sents.length) out.push({t:t, n:n, c:cons, ps:sents});
+        return;
+      }
       var ps = allParts(t,d).filter(function(p){
         if (sp[3] && sp[3].indexOf('q:')===0) return p[0]==='Questions' && p[2]===sp[3].slice(2);
         if (sp[1].length && sp[1].indexOf(p[0])<0) return false;
@@ -8244,9 +8370,10 @@ var MEM = {
     var pool, it, i = 0;
     if (fixed) { var t=fixed[0], d=item(t,fixed[1]); if (!d) return ''; pool = [{t:t, n:fixed[1], c:(t==='o1'||t==='b1')?d.q:d.c, ps:allParts(t,d).map(function(p){ return [p[2]?p[2]+' →':p[0], p[1]]; })}]; }
     else { pool = poolFor(id); if (!pool.length) return ''; if (exIdx[id] === undefined) exIdx[id] = Math.floor(Math.random()*pool.length); i = exIdx[id] % pool.length; }
-    it = pool[i]; var extra = !fixed && EXS[id][4] ? new RegExp(EXS[id][4].source, 'g') : null;
+    it = pool[i]; var x4 = !fixed && EXS[id][4], extra = x4 ? new RegExp(x4.source, x4.flags.indexOf('g') < 0 ? x4.flags + 'g' : x4.flags) : null;
     var cOnly = !fixed && EXS[id][3]==='c';
-    return '<div class="mem-ex"><div class="mem-ex__h"><span>'+(fixed ? 'Modèle découpé' : (cOnly ? 'Exemple de sujet' : 'Exemple tiré d\'un sujet'))+' · '+refOf(it.t,it.n)+' · '+esc(TNAME[it.t])+'</span>'
+    var sMode = !fixed && EXS[id][3]==='s';
+    return '<div class="mem-ex"><div class="mem-ex__h"><span>'+(fixed ? 'Modèle découpé' : (cOnly ? 'Exemple de sujet' : sMode ? 'Dans les sujets' : 'Exemple tiré d\'un sujet'))+' · '+refOf(it.t,it.n)+' · '+esc(TNAME[it.t])+'</span>'
       + (pool.length>1 ? '<span class="mem-ex__n">'+(i+1)+' / '+pool.length+'</span>' : '')+'</div>'
       + '<p class="mem-ex__c">'+esc(it.c)+'</p>'
       + it.ps.map(function(p){ return '<p class="mem-ex__p"><b>'+esc(p[0])+'</b><span>'+hl(p[1], extra).replace(/\n/g,'<br>')+'</span></p>'; }).join('')
@@ -8368,7 +8495,7 @@ var MEM = {
 
   function render(msg){
     var h = '<h2>Mémoriser les consignes et les phrases-clés</h2>'
-      + '<p class="mem-lead">Trois exercices courts pour apprendre par cœur le format des 4 épreuves, les structures des 6 tâches, les phrases-clés, les connecteurs et vos pièges. Votre progression reste enregistrée dans ce navigateur.</p>'
+      + '<p class="mem-lead">Quatre exercices courts pour apprendre par cœur le format des 4 épreuves, les structures des 6 tâches, les phrases-clés, les connecteurs, vos pièges, et la grammaire, la syntaxe et le lexique des sujets (exemples soulignés en rouge). Votre progression reste enregistrée dans ce navigateur.</p>'
       + '<div class="mem-modes" role="group" aria-label="Choisir un exercice">'
       + [['cards','🃏 Cartes'],['subj','📝 Sujet → plan'],['cloze','✏️ Phrases à trous'],['order','🔢 Remettre dans l\'ordre']].map(function(m){ return '<button type="button" data-mode="'+m[0]+'" aria-pressed="'+(st.mode===m[0])+'">'+m[1]+'</button>'; }).join('')
       + '</div><div class="mem-body">'
