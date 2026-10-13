@@ -1388,6 +1388,10 @@
   .mem-ex__p b{ font-size:.72rem; color:var(--mm-c); }
   .mem-subj{ font-family:'Source Sans 3',sans-serif; font-size:1rem; font-weight:500; }
   .mem-plan{ margin:0 0 .3rem; padding-left:1.4rem; font-weight:600; color:var(--mm-c); font-size:.9rem; } .mem-plan li{ margin:.1rem 0; }
+  .mem-u{ background:none; color:#B91C1C; font-weight:600; text-decoration:underline; text-decoration-color:#DC2626; text-decoration-thickness:2px; text-underline-offset:3px; }
+  .mem-ex__h{ display:flex; justify-content:space-between; gap:.5rem; }
+  .mem-ex__n{ flex:none; color:var(--ink-soft); }
+  .mem-ex__next{ margin-top:.3rem; font:600 .74rem 'IBM Plex Mono',monospace; padding:.4rem .7rem; min-height:34px; border-radius:6px; border:1px solid var(--mm-c); background:var(--mm-soft); color:var(--mm-c); cursor:pointer; }
 
 </style>
 </head>
@@ -8168,28 +8172,86 @@ var MEM = {
     if (t==='o2' || t==='b2') return [['Ouverture',d.o],['Questions',d.q.slice(0,4).map(function(x){ return x[0]+' → '+x[1]; }).join('\n')],['Relancer la conversation',d.r],['Conclure',d.f]];
     return d.p;
   }
-  // [task, number, labels to show (empty = all)]
-  var EX = {
-    'structures-0':['e1',5,[]], 'structures-1':['e2',1,[]], 'structures-2':['e3',5,['Titre','Introduction','Document 1','Document 2']],
-    'structures-3':['e3',5,['Opinion','Argument 1','Exemple 1','Argument 2','Exemple 2','Nuance','Conclusion']],
-    'structures-4':['o1',1,[]], 'structures-5':['o2',7,[]], 'structures-6':['o3',12,[]], 'structures-7':['e3',8,['Argument 1','Exemple 1']],
-    'phrases-0':['e1',7,['Raison du message']], 'phrases-1':['e1',2,['Informations principales']], 'phrases-2':['e1',11,['Informations principales']],
-    'phrases-3':['e1',5,['Conclusion']], 'phrases-4':['e1',1,['Conclusion']], 'phrases-5':['e1',2,['Salutation','Conclusion']],
-    'phrases-6':['e2',7,['Contexte / introduction']], 'phrases-7':['e2',4,['Événements']], 'phrases-8':['e2',3,['Résultat / opinion']],
-    'phrases-9':['e2',5,['Résultat / opinion']], 'phrases-10':['e2',9,['Titre']], 'phrases-11':['e3',6,['Introduction']],
-    'phrases-12':['e3',7,['Document 1','Document 2']], 'phrases-13':['e3',2,['Opinion']], 'phrases-14':['e3',9,['Nuance']],
-    'phrases-15':['e3',4,['Conclusion']], 'phrases-16':['o1',0,[]], 'phrases-17':['o1',4,[]], 'phrases-18':['o2',7,['Ouverture']],
-    'phrases-20':['o2',0,['Relancer la conversation']], 'phrases-21':['o2',0,['Conclure']], 'phrases-22':['o3',7,['Opinion']],
-    'connecteurs-0':['e3',1,['Argument 1']], 'connecteurs-1':['e3',1,['Argument 2']], 'connecteurs-3':['e3',3,['Exemple 1','Exemple 2']],
-    'connecteurs-4':['e3',1,['Document 2','Nuance']], 'connecteurs-8':['e3',6,['Conclusion']], 'connecteurs-9':['e2',2,['Événements']],
-    'questions-0':['o2',7,['Questions']], 'questions-8':['b2',11,['Questions']]
+  // ===== Exemples tirés de tous les sujets (rotation) =====
+  SRC.b1 = MM_BANK.b1; TNAME.b1 = 'EO T1 · Entretien (banque)';
+  var P1 = ['Titre','Introduction','Document 1','Document 2'], P2 = ['Opinion','Argument 1','Exemple 1','Argument 2','Exemple 2','Nuance','Conclusion'];
+  var ARG = ['e3','o3','b3'], OT2 = ['o2','b2'], OT1 = ['o1','b1'];
+  // spec : [tâches, étiquettes (vide = tout), filtre (regex texte), mode]  mode 'c' = consigne seule, 'q:Tag' = questions de ce type
+  var EXS = {
+    'format-2':[['e1','e2','e3'],[],null,'c'], 'format-3':[['o2','o3','b2','b3'],[],null,'c'], 'format-4':[['e1'],[],null,'c'], 'format-5':[['e2'],[],null,'c'], 'format-6':[['e3'],[],null,'c'], 'format-7':[['e1','e2','e3'],[],null,'c'],
+    'format-8':[OT1,[],null,'c'], 'format-9':[OT2,[],null,'c'], 'format-10':[['o3','b3'],[],null,'c'], 'format-11':[['e3'],P1], 'format-12':[['e3'],P2],
+    'structures-0':[['e1'],[]], 'structures-1':[['e2'],[]], 'structures-2':[['e3'],P1], 'structures-3':[ARG,P2], 'structures-4':[OT1,[]],
+    'structures-5':[OT2,[]], 'structures-6':[['o3','b3'],P2], 'structures-7':[ARG,['Argument 1','Exemple 1']],
+    'phrases-0':[['e1'],['Raison du message']], 'phrases-1':[['e1'],['Informations principales']],
+    'phrases-2':[['e1'],['Informations principales','Conclusion'],/\?|pourr|peux|peut/i], 'phrases-3':[['e1'],['Raison du message','Informations principales','Conclusion'],/propos|pourr|on pourra|on peut/i],
+    'phrases-4':[['e1'],['Conclusion']], 'phrases-5':[['e1'],['Salutation','Conclusion']], 'phrases-6':[['e2'],['Contexte / introduction']],
+    'phrases-7':[['e2'],['Événements']], 'phrases-8':[['e2'],['Détails','Résultat / opinion'],/appréci|plu|marqu|aimé|ému|fier|surpris|ravi/i],
+    'phrases-9':[['e2'],['Résultat / opinion']], 'phrases-10':[['e2'],['Titre']], 'phrases-11':[['e3'],['Introduction']],
+    'phrases-12':[['e3'],['Document 1','Document 2']], 'phrases-13':[ARG,['Opinion']], 'phrases-14':[ARG,['Nuance']], 'phrases-15':[ARG,['Conclusion']],
+    'phrases-16':[OT1,[],/m'appelle|originaire|habite|marié/i], 'phrases-17':[OT1,[],/projet|aimerais|souhaite|veux/i],
+    'phrases-18':[OT2,['Ouverture']], 'phrases-20':[OT2,['Relancer la conversation']], 'phrases-21':[OT2,['Conclure']], 'phrases-22':[['o3','b3'],['Opinion']],
+    'connecteurs-0':[ARG.concat(['e2']),['Argument 1','Événements'],/Tout d'abord|D'abord/], 'connecteurs-1':[ARG.concat(['e2']),[],/Ensuite|De plus|En outre|Par ailleurs|Après cela/],
+    'connecteurs-2':[ARG,[],/En effet|\bcar\b|puisque/], 'connecteurs-3':[ARG,['Exemple 1','Exemple 2']],
+    'connecteurs-4':[ARG,['Document 2','Nuance'],/Cependant|Toutefois|En revanche|Néanmoins|Par contre|Pourtant|Au contraire|À l'inverse|À l'opposé/],
+    'connecteurs-5':[ARG,[],/tandis que|alors que|D'un côté|D'une part/], 'connecteurs-6':[ARG.concat(['e2']),[],/\bdonc\b|Ainsi|Par conséquent|C'est pourquoi/],
+    'connecteurs-7':[ARG,[],/Certes|Même si|même si|Bien que|Il est vrai/], 'connecteurs-8':[ARG.concat(['e2']),['Conclusion','Résultat / opinion']],
+    'connecteurs-9':[['e2'],['Événements']],
+    'questions-0':[OT2,[],null,'q:Prix'], 'questions-1':[OT2,[],null,'q:Horaires'], 'questions-2':[OT2,[],null,'q:Lieu'], 'questions-3':[OT2,[],null,'q:Durée'],
+    'questions-4':[OT2,[],null,'q:Conditions'], 'questions-5':[OT2,[],null,'q:Disponibilité'], 'questions-6':[OT2,[],null,'q:Documents'],
+    'questions-7':[OT2,[],null,'q:Modalités'], 'questions-8':[OT2,['Questions']], 'questions-9':[OT2,['Ouverture']],
+    'pieges-0':[['e1','e2'],[],/(^|\s)à\s/,null,/(?<=^|\s)(à|a)(?=\s)/g], 'pieges-1':[ARG,P2], 'pieges-2':[['e3'],[]], 'pieges-4':[['e1'],['Conclusion']],
+    'pieges-7':[ARG.concat(['e1','e2']),[],/aider à|parler de|chargé de|besoin de/,null,/aider à|parler de|chargé de|besoin de/g]
   };
-  function exampleHTML(ex){
-    var t=ex[0], d=item(t,ex[1]); if (!d) return '';
-    var ps = partsOf(t,d).filter(function(p){ return !ex[2].length || ex[2].indexOf(p[0])>=0; });
-    return '<div class="mem-ex"><div class="mem-ex__h">Exemple tiré d\'un sujet · '+refOf(t,ex[1])+' · '+esc(TNAME[t])+'</div>'
-      + '<p class="mem-ex__c">'+esc(t==='o1' ? d.q : d.c)+'</p>'
-      + ps.map(function(p){ return '<p class="mem-ex__p"><b>'+esc(p[0])+'</b><span>'+esc(p[1]).replace(/\n/g,'<br>')+'</span></p>'; }).join('') + '</div>';
+  function allParts(t,d){ if (t==='o2' || t==='b2') return [['Ouverture',d.o]].concat(d.q.map(function(x){ return ['Questions', x[1], x[0]]; })).concat([['Relancer la conversation',d.r],['Conclure',d.f]]); return d.p; }
+  var POOL = {};
+  function poolFor(id){
+    if (POOL[id]) return POOL[id];
+    var sp = EXS[id], out = [];
+    if (!sp) return POOL[id] = out;
+    sp[0].forEach(function(t){ SRC[t].forEach(function(d, idx){
+      var n = (t==='o1'||t==='b1') ? idx : d.n, cons = (t==='o1'||t==='b1') ? d.q : d.c;
+      if (sp[3]==='c') { out.push({t:t, n:n, c:cons, ps:[]}); return; }
+      var ps = allParts(t,d).filter(function(p){
+        if (sp[3] && sp[3].indexOf('q:')===0) return p[0]==='Questions' && p[2]===sp[3].slice(2);
+        if (sp[1].length && sp[1].indexOf(p[0])<0) return false;
+        return !sp[2] || sp[2].test(p[1]);
+      });
+      if (!sp[1].length && !sp[3] && sp[2]) ps = ps.length ? ps : [];
+      if (ps.length) out.push({t:t, n:n, c:cons, ps:ps.map(function(p){ return [p[2] ? p[2]+' →' : p[0], p[1]]; })});
+    }); });
+    return POOL[id] = out;
+  }
+  // Soulignement rouge des phrases-clés et connecteurs
+  var KEYS = ["Tout d'abord","D'abord","Premièrement","Ensuite","Après cela","Puis","Enfin","Finalement","De plus","En outre","Par ailleurs","Également",
+    "En effet","Par exemple","Notamment","Cependant","Toutefois","Néanmoins","En revanche","Par contre","Pourtant","Au contraire","À l'inverse","À l'opposé","Mais",
+    "tandis que","alors que","D'un côté","De l'autre","Donc","Ainsi","Par conséquent","C'est pourquoi","Certes","Même si","Bien que","Il est vrai que",
+    "En conclusion","En définitive","Pour conclure","Pour toutes ces raisons","Bref","Dans l'ensemble",
+    "À mon avis","Selon moi","Pour moi","Pour ma part","Personnellement","D'après moi","Je pense que","je pense que","Je suis d'accord","Je suis partiellement d'accord","Je suis plutôt d'accord","Je ne suis pas d'accord","Je suis plutôt favorable","Je suis favorable",
+    "Je t'écris pour","Je vous écris pour","Je vous écris afin de","Merci","J'espère que","N'hésite pas","N'hésitez pas","À bientôt","Cordialement","Amitiés","Bises","Je t'embrasse","Je vous propose","Je te propose","Qu'en dis-tu","Qu'en pensez-vous","Réponds-moi","Dis-moi",
+    "Chers lecteurs","Et toi","Et vous","Ah bon","D'accord","parce que","J'apprends","Je veux","Qui peut","Il me faut","J'aurais besoin","Pourrais-tu","Pourriez-vous","Tu peux","Vous pouvez","J'ai adoré","J'ai aimé","J'étais","J'ai été agréablement surpris","Ce qui m'a","Voici","Il se trouve","se trouve","Il y a","À quelle heure","Quelles","Qu'est-ce que","Avez-vous","Pouvez-vous","Est-il","Sont-ils","Cette expérience m'a permis de","J'ai beaucoup apprécié","Ce qui m'a vraiment plu","Ce que j'ai le plus aimé","Ce qui m'a le plus marqué","Je vous la recommande","Je recommande",
+    "Aujourd'hui,","suscite des avis divergents","divise les avis","soulève diverses opinions","est souvent débattu","Le premier document","le second","Selon le premier","D'après le premier","Pour l'auteur du premier","Pour le premier",
+    "Je m'appelle","Je suis originaire","J'aimerais","Je souhaite","Bonjour","Salut","Excusez-moi","Est-ce que je peux","Si je comprends bien","Et si","Et pour",
+    "Combien","Quel","Quels","Quelle","Quelles","Où","Quand","Comment","Pourquoi","Faut-il","Peut-on","Est-ce que","Y a-t-il"];
+  KEYS.sort(function(a,b){ return b.length-a.length; });
+  var KEYRX = new RegExp('(^|[^A-Za-zÀ-ÿ\'’])(' + KEYS.map(function(k){ return k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/'/g,"['’]"); }).join('|') + ')(?![A-Za-zÀ-ÿ\-])', 'gi');
+  function hl(text, extra){
+    var e = esc(text);
+    if (extra) return e.replace(extra, function(m){ return '<mark class="mem-u">'+m+'</mark>'; });
+    return e.replace(KEYRX, function(m, pre, k){ return pre + '<mark class="mem-u">'+k+'</mark>'; });
+  }
+  var exIdx = {};
+  function exampleHTML(id, fixed){
+    var pool, it, i = 0;
+    if (fixed) { var t=fixed[0], d=item(t,fixed[1]); if (!d) return ''; pool = [{t:t, n:fixed[1], c:(t==='o1'||t==='b1')?d.q:d.c, ps:allParts(t,d).map(function(p){ return [p[2]?p[2]+' →':p[0], p[1]]; })}]; }
+    else { pool = poolFor(id); if (!pool.length) return ''; if (exIdx[id] === undefined) exIdx[id] = Math.floor(Math.random()*pool.length); i = exIdx[id] % pool.length; }
+    it = pool[i]; var extra = !fixed && EXS[id][4] ? new RegExp(EXS[id][4].source, 'g') : null;
+    var cOnly = !fixed && EXS[id][3]==='c';
+    return '<div class="mem-ex"><div class="mem-ex__h"><span>'+(fixed ? 'Modèle découpé' : (cOnly ? 'Exemple de sujet' : 'Exemple tiré d\'un sujet'))+' · '+refOf(it.t,it.n)+' · '+esc(TNAME[it.t])+'</span>'
+      + (pool.length>1 ? '<span class="mem-ex__n">'+(i+1)+' / '+pool.length+'</span>' : '')+'</div>'
+      + '<p class="mem-ex__c">'+esc(it.c)+'</p>'
+      + it.ps.map(function(p){ return '<p class="mem-ex__p"><b>'+esc(p[0])+'</b><span>'+hl(p[1], extra).replace(/\n/g,'<br>')+'</span></p>'; }).join('')
+      + (pool.length>1 ? '<button type="button" class="mem-ex__next" data-act="exnext" data-id="'+id+'">↻ Autre exemple ('+pool.length+' sujets)</button>' : '')
+      + '</div>';
   }
   // Phrases à trous tirées des textes modèles : on cache le connecteur en début de phrase
   var FAM = [
@@ -8228,7 +8290,7 @@ var MEM = {
       + '<p class="mem-card__f mem-subj">'+esc(d.c)+'</p>';
     if (subjShown) {
       h += '<ol class="mem-plan">'+STEPS[t].map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ol>'
-        + exampleHTML([t, subjCur[1], []]).replace('Exemple tiré d\'un sujet', 'Modèle découpé');
+        + exampleHTML(null, [t, subjCur[1]]);
     } else h += '<p class="mem-card__hint">Combien d\'étapes ? Lesquelles ? Quelle phrase-clé pour chacune ?</p>';
     h += '</div><div class="mem-actions">'
       + (subjShown ? '' : '<button type="button" class="mem-btn mem-btn--main" data-act="sshow">Voir le plan et le modèle</button>')
@@ -8265,7 +8327,7 @@ var MEM = {
       h += '<div class="mem-card'+(shown?' is-shown':'')+'">'
         + '<div class="mem-card__meta"><span>'+esc(dn)+'</span><span class="mem-dots" aria-label="Niveau '+boxOf(cur)+' sur 4">'+[1,2,3,4].map(function(i){ return '<i class="'+(boxOf(cur)>=i?'on':'')+'"></i>'; }).join('')+'</span></div>'
         + '<p class="mem-card__f">'+esc(cur.f)+'</p>'
-        + (shown ? '<p class="mem-card__b">'+esc(cur.b)+'</p>'+(EX[cur.id] ? exampleHTML(EX[cur.id]) : '') : '<p class="mem-card__hint">Dites la réponse à voix haute, puis retournez la carte.</p>')
+        + (shown ? '<p class="mem-card__b">'+esc(cur.b)+'</p>'+(EXS[cur.id] ? exampleHTML(cur.id) : '') : '<p class="mem-card__hint">Dites la réponse à voix haute, puis retournez la carte.</p>')
         + '</div>'
         + (shown
           ? '<div class="mem-actions"><button type="button" class="mem-btn mem-btn--no" data-act="no">↺ À revoir</button><button type="button" class="mem-btn mem-btn--yes" data-act="yes">✓ Je savais</button></div>'
@@ -8348,6 +8410,7 @@ var MEM = {
       render(msg);
       var inp = root.querySelector('.mem-input'); if (inp) inp.value = val;
     }
+    else if (a==='exnext'){ var id=b.dataset.id; exIdx[id] = (exIdx[id]||0)+1; render(); }
     else if (a==='sshow'){ subjShown = true; render(); }
     else if (a==='snext'){ subjCur = null; render(); }
     else if (a==='cnext'){ clozeI++; render(); }
