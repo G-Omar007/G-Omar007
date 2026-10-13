@@ -1381,6 +1381,13 @@
   .mem-chip{ font:500 .88rem 'Source Sans 3',sans-serif; padding:.5rem .75rem; min-height:40px; border-radius:8px; border:1.5px solid var(--line); background:var(--mm-soft); color:var(--ink); cursor:pointer; }
   .mem-chip.is-wrong{ border-color:#B91C1C; background:#FEE2E2; animation:memShake .35s; }
   @keyframes memShake{ 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  .mem-ex{ margin:.8rem 0 0; border:1px dashed var(--mm-c); border-radius:8px; padding:.7rem .8rem; background:#fff; }
+  .mem-ex__h{ font:600 .66rem 'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.05em; color:var(--mm-c); margin:0 0 .35rem; }
+  .mem-ex__c{ margin:0 0 .5rem; font-size:.84rem; font-style:italic; color:var(--ink-soft); }
+  .mem-ex__p{ margin:0 0 .4rem; font-size:.9rem; line-height:1.5; display:grid; gap:.05rem; }
+  .mem-ex__p b{ font-size:.72rem; color:var(--mm-c); }
+  .mem-subj{ font-family:'Source Sans 3',sans-serif; font-size:1rem; font-weight:500; }
+  .mem-plan{ margin:0 0 .3rem; padding-left:1.4rem; font-weight:600; color:var(--mm-c); font-size:.9rem; } .mem-plan li{ margin:.1rem 0; }
 
 </style>
 </head>
@@ -8152,9 +8159,85 @@ var MEM = {
   function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   var CARDS = [];
   MEM.decks.forEach(function(d){ d.cards.forEach(function(c,i){ CARDS.push({id:d.id+'-'+i, deck:d.id, f:c[0], b:c[1]}); }); });
+
+  var SRC = { e1:MM_DATA.e1, e2:MM_DATA.e2, e3:MM_DATA.e3, o1:MM_DATA.o1, o2:MM_DATA.o2, o3:MM_DATA.o3, b2:MM_BANK.b2, b3:MM_BANK.b3 };
+  var TNAME = { e1:'EE T1 · Message', e2:'EE T2 · Récit', e3:'EE T3 · Opinion', o1:'EO T1 · Entretien', o2:'EO T2 · Interaction', o3:'EO T3 · Point de vue', b2:'EO T2 · Interaction (banque)', b3:'EO T3 · Point de vue (banque)' };
+  function refOf(t,n){ return t==='o1' ? 'Q'+(n+1) : t.charAt(0)==='e' ? 'C'+n : t.charAt(0)==='b' ? '#'+n : 'P'+(Math.floor(n/5)+1)+'·'+(n%5+1); }
+  function item(t,n){ var L = SRC[t]; if (t==='o1') return L[n]; for (var i=0;i<L.length;i++) if (L[i].n===n) return L[i]; return null; }
+  function partsOf(t,d){
+    if (t==='o2' || t==='b2') return [['Ouverture',d.o],['Questions',d.q.slice(0,4).map(function(x){ return x[0]+' → '+x[1]; }).join('\n')],['Relancer la conversation',d.r],['Conclure',d.f]];
+    return d.p;
+  }
+  // [task, number, labels to show (empty = all)]
+  var EX = {
+    'structures-0':['e1',5,[]], 'structures-1':['e2',1,[]], 'structures-2':['e3',5,['Titre','Introduction','Document 1','Document 2']],
+    'structures-3':['e3',5,['Opinion','Argument 1','Exemple 1','Argument 2','Exemple 2','Nuance','Conclusion']],
+    'structures-4':['o1',1,[]], 'structures-5':['o2',7,[]], 'structures-6':['o3',12,[]], 'structures-7':['e3',8,['Argument 1','Exemple 1']],
+    'phrases-0':['e1',7,['Raison du message']], 'phrases-1':['e1',2,['Informations principales']], 'phrases-2':['e1',11,['Informations principales']],
+    'phrases-3':['e1',5,['Conclusion']], 'phrases-4':['e1',1,['Conclusion']], 'phrases-5':['e1',2,['Salutation','Conclusion']],
+    'phrases-6':['e2',7,['Contexte / introduction']], 'phrases-7':['e2',4,['Événements']], 'phrases-8':['e2',3,['Résultat / opinion']],
+    'phrases-9':['e2',5,['Résultat / opinion']], 'phrases-10':['e2',9,['Titre']], 'phrases-11':['e3',6,['Introduction']],
+    'phrases-12':['e3',7,['Document 1','Document 2']], 'phrases-13':['e3',2,['Opinion']], 'phrases-14':['e3',9,['Nuance']],
+    'phrases-15':['e3',4,['Conclusion']], 'phrases-16':['o1',0,[]], 'phrases-17':['o1',4,[]], 'phrases-18':['o2',7,['Ouverture']],
+    'phrases-20':['o2',0,['Relancer la conversation']], 'phrases-21':['o2',0,['Conclure']], 'phrases-22':['o3',7,['Opinion']],
+    'connecteurs-0':['e3',1,['Argument 1']], 'connecteurs-1':['e3',1,['Argument 2']], 'connecteurs-3':['e3',3,['Exemple 1','Exemple 2']],
+    'connecteurs-4':['e3',1,['Document 2','Nuance']], 'connecteurs-8':['e3',6,['Conclusion']], 'connecteurs-9':['e2',2,['Événements']],
+    'questions-0':['o2',7,['Questions']], 'questions-8':['b2',11,['Questions']]
+  };
+  function exampleHTML(ex){
+    var t=ex[0], d=item(t,ex[1]); if (!d) return '';
+    var ps = partsOf(t,d).filter(function(p){ return !ex[2].length || ex[2].indexOf(p[0])>=0; });
+    return '<div class="mem-ex"><div class="mem-ex__h">Exemple tiré d\'un sujet · '+refOf(t,ex[1])+' · '+esc(TNAME[t])+'</div>'
+      + '<p class="mem-ex__c">'+esc(t==='o1' ? d.q : d.c)+'</p>'
+      + ps.map(function(p){ return '<p class="mem-ex__p"><b>'+esc(p[0])+'</b><span>'+esc(p[1]).replace(/\n/g,'<br>')+'</span></p>'; }).join('') + '</div>';
+  }
+  // Phrases à trous tirées des textes modèles : on cache le connecteur en début de phrase
+  var FAM = [
+    ['tout d\'abord','d\'abord','premièrement','pour commencer'],
+    ['ensuite','de plus','en outre','par ailleurs','également','après cela','puis'],
+    ['cependant','toutefois','néanmoins','en revanche','pourtant','par contre','au contraire','à l\'inverse','à l\'opposé','mais'],
+    ['par exemple','notamment','à titre d\'exemple'],
+    ['en conclusion','en définitive','pour conclure','bref','pour toutes ces raisons'],
+    ['enfin','finalement','pour finir'],
+    ['à mon avis','selon moi','pour ma part','personnellement','d\'après moi'],
+    ['dans l\'ensemble','globalement']
+  ];
+  var CONN = ['Tout d\'abord','Après cela','Ensuite','Enfin','De plus','Cependant','Néanmoins','Toutefois','En revanche','Par contre','Pourtant','Au contraire','À l\'inverse','À l\'opposé','Par exemple','En conclusion','En définitive','Dans l\'ensemble','À mon avis'];
+  function famOf(w){ w = w.toLowerCase(); for (var i=0;i<FAM.length;i++) if (FAM[i].indexOf(w)>=0) return i; return -1; }
+  var AUTO = [], seen = {};
+  ['e2','e3','o3','b3'].forEach(function(t){ SRC[t].forEach(function(d){ d.p.forEach(function(p){
+    p[1].split(/(?<=[.!?])\s+/).forEach(function(sent){
+      for (var k=0;k<CONN.length;k++){ var c=CONN[k];
+        if (sent.indexOf(c+',')===0 && !seen[sent]) { seen[sent]=1; AUTO.push([refOf(t,d.n)+' · '+TNAME[t], '['+c+']'+sent.slice(c.length), 1]); break; } }
+    });
+  }); }); });
+  var CLOZE = MEM.cloze.concat(AUTO);
+  // Sujet → plan
+  var STEPS = { e1:MM_TASKS_STA.e1.steps, e2:MM_TASKS_STA.e2.steps, e3:MM_TASKS_STA.e3.steps, o2:MM_TASKS_STA.o2.steps, o3:MM_TASKS_STA.o3.steps, b2:MM_TASKS_STA.o2.steps, b3:MM_TASKS_STA.o3.steps };
+  var SUBJ = []; Object.keys(STEPS).forEach(function(t){ SRC[t].forEach(function(d){ SUBJ.push([t,d.n]); }); });
+  var subjCur = null, subjShown = false;
+  st.subjT = st.subjT || 'all';
+  function pickSubj(){ var p = SUBJ.filter(function(x){ return st.subjT==='all' || x[0]===st.subjT || (st.subjT==='o2' && x[0]==='b2') || (st.subjT==='o3' && x[0]==='b3'); }); return p[Math.floor(Math.random()*p.length)]; }
+  function renderSubj(){
+    if (!subjCur) { subjCur = pickSubj(); subjShown = false; }
+    var t = subjCur[0], d = item(t, subjCur[1]);
+    var h = '<p class="mem-lead">Lisez le sujet, récitez le plan à voix haute (et une phrase par étape), puis comparez avec le modèle.</p>'
+      + '<div class="mem-decks" role="group" aria-label="Choisir une tâche">'
+      + [['all','Toutes'],['e1','EE T1'],['e2','EE T2'],['e3','EE T3'],['o2','EO T2'],['o3','EO T3']].map(function(x){ return '<button type="button" data-subj="'+x[0]+'" aria-pressed="'+(st.subjT===x[0])+'">'+x[1]+'</button>'; }).join('') + '</div>'
+      + '<div class="mem-card"><div class="mem-card__meta"><span>'+esc(TNAME[t])+'</span><span>'+refOf(t,subjCur[1])+'</span></div>'
+      + '<p class="mem-card__f mem-subj">'+esc(d.c)+'</p>';
+    if (subjShown) {
+      h += '<ol class="mem-plan">'+STEPS[t].map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ol>'
+        + exampleHTML([t, subjCur[1], []]).replace('Exemple tiré d\'un sujet', 'Modèle découpé');
+    } else h += '<p class="mem-card__hint">Combien d\'étapes ? Lesquelles ? Quelle phrase-clé pour chacune ?</p>';
+    h += '</div><div class="mem-actions">'
+      + (subjShown ? '' : '<button type="button" class="mem-btn mem-btn--main" data-act="sshow">Voir le plan et le modèle</button>')
+      + '<button type="button" class="mem-btn" data-act="snext">Autre sujet →</button></div>';
+    return h;
+  }
   function boxOf(c){ return st.box[c.id] || 0; }
   function pool(){ return CARDS.filter(function(c){ return st.deck==='all' || c.deck===st.deck; }); }
-  var cur = null, shown = false, clozeI = 0, clozeOrder = shuffle(MEM.cloze.map(function(_,i){ return i; })), orderI = 0, orderState = null;
+  var cur = null, shown = false, clozeI = 0, clozeOrder = null, orderI = 0, orderState = null;
 
   function pickCard(){
     var p = pool(); if (!p.length) return null;
@@ -8182,7 +8265,7 @@ var MEM = {
       h += '<div class="mem-card'+(shown?' is-shown':'')+'">'
         + '<div class="mem-card__meta"><span>'+esc(dn)+'</span><span class="mem-dots" aria-label="Niveau '+boxOf(cur)+' sur 4">'+[1,2,3,4].map(function(i){ return '<i class="'+(boxOf(cur)>=i?'on':'')+'"></i>'; }).join('')+'</span></div>'
         + '<p class="mem-card__f">'+esc(cur.f)+'</p>'
-        + (shown ? '<p class="mem-card__b">'+esc(cur.b)+'</p>' : '<p class="mem-card__hint">Dites la réponse à voix haute, puis retournez la carte.</p>')
+        + (shown ? '<p class="mem-card__b">'+esc(cur.b)+'</p>'+(EX[cur.id] ? exampleHTML(EX[cur.id]) : '') : '<p class="mem-card__hint">Dites la réponse à voix haute, puis retournez la carte.</p>')
         + '</div>'
         + (shown
           ? '<div class="mem-actions"><button type="button" class="mem-btn mem-btn--no" data-act="no">↺ À revoir</button><button type="button" class="mem-btn mem-btn--yes" data-act="yes">✓ Je savais</button></div>'
@@ -8197,9 +8280,10 @@ var MEM = {
   function norm(s){ return String(s).toLowerCase().replace(/[’']/g,"'").replace(/\s+/g,' ').trim(); }
   function strip(s){ return norm(s).normalize('NFD').replace(/[̀-ͯ]/g,''); }
   function renderCloze(msg){
-    var c = MEM.cloze[clozeOrder[clozeI % clozeOrder.length]];
+    if (!clozeOrder) clozeOrder = shuffle(CLOZE.map(function(_,i){ return i; }));
+    var c = CLOZE[clozeOrder[clozeI % clozeOrder.length]];
     var parts = c[1].split(/\[|\]/);
-    var h = '<p class="mem-lead">Écrivez le mot manquant, puis vérifiez. Phrase '+((clozeI % clozeOrder.length)+1)+' / '+clozeOrder.length+'.</p>'
+    var h = '<p class="mem-lead">Écrivez le mot manquant, puis vérifiez. Phrase '+((clozeI % clozeOrder.length)+1)+' / '+clozeOrder.length+'. Les phrases marquées C… ou P… viennent des textes modèles : retrouvez le connecteur.</p>'
       + '<div class="mem-card"><div class="mem-card__meta"><span>'+esc(c[0])+'</span></div>'
       + '<p class="mem-card__f mem-cloze">'+esc(parts[0])+'<input type="text" class="mem-input" aria-label="Mot manquant" autocomplete="off" autocapitalize="off" spellcheck="false" size="'+Math.max(6,parts[1].length+2)+'">'+esc(parts[2])+'</p>'
       + (msg || '') + '</div>'
@@ -8224,9 +8308,9 @@ var MEM = {
     var h = '<h2>Mémoriser les consignes et les phrases-clés</h2>'
       + '<p class="mem-lead">Trois exercices courts pour apprendre par cœur le format des 4 épreuves, les structures des 6 tâches, les phrases-clés, les connecteurs et vos pièges. Votre progression reste enregistrée dans ce navigateur.</p>'
       + '<div class="mem-modes" role="group" aria-label="Choisir un exercice">'
-      + [['cards','🃏 Cartes'],['cloze','✏️ Phrases à trous'],['order','🔢 Remettre dans l\'ordre']].map(function(m){ return '<button type="button" data-mode="'+m[0]+'" aria-pressed="'+(st.mode===m[0])+'">'+m[1]+'</button>'; }).join('')
+      + [['cards','🃏 Cartes'],['subj','📝 Sujet → plan'],['cloze','✏️ Phrases à trous'],['order','🔢 Remettre dans l\'ordre']].map(function(m){ return '<button type="button" data-mode="'+m[0]+'" aria-pressed="'+(st.mode===m[0])+'">'+m[1]+'</button>'; }).join('')
       + '</div><div class="mem-body">'
-      + (st.mode==='cards' ? renderCards() : st.mode==='cloze' ? renderCloze(msg) : renderOrder())
+      + (st.mode==='cards' ? renderCards() : st.mode==='subj' ? renderSubj() : st.mode==='cloze' ? renderCloze(msg) : renderOrder())
       + '</div>';
     root.innerHTML = h;
     var inp = root.querySelector('.mem-input');
@@ -8236,6 +8320,7 @@ var MEM = {
   root.addEventListener('click', function(e){
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.mode){ st.mode = b.dataset.mode; save(); render(); return; }
+    if (b.dataset.subj){ st.subjT = b.dataset.subj; subjCur = null; save(); render(); return; }
     if (b.dataset.deck){ st.deck = b.dataset.deck; cur = null; save(); render(); return; }
     if (b.dataset.step !== undefined){
       var i = +b.dataset.step, o = orderState;
@@ -8252,16 +8337,19 @@ var MEM = {
     }
     else if (a==='reset'){ if (confirm('Remettre toute votre progression à zéro ?')) { st.box = {}; save(); cur = null; render(); } }
     else if (a==='ccheck' || a==='creveal'){
-      var c = MEM.cloze[clozeOrder[clozeI % clozeOrder.length]], ans = c[1].split(/\[|\]/)[1];
+      var c = CLOZE[clozeOrder[clozeI % clozeOrder.length]], ans = c[1].split(/\[|\]/)[1];
       var val = (root.querySelector('.mem-input')||{}).value || '';
       var msg;
       if (a==='creveal') msg = '<p class="mem-card__b">Réponse : <b>'+esc(ans)+'</b></p>';
       else if (norm(val) === norm(ans)) msg = '<p class="mem-ok">✓ Bravo !</p>';
+      else if (c[2] && famOf(norm(val)) >= 0 && famOf(norm(val)) === famOf(norm(ans))) msg = '<p class="mem-ok">✓ Correct aussi ! Le modèle utilise « '+esc(ans)+' », de la même famille.</p>';
       else if (strip(val) === strip(ans)) msg = '<p class="mem-warn">Presque : attention aux accents → <b>'+esc(ans)+'</b></p>';
       else msg = '<p class="mem-no">✕ Pas tout à fait. Réessayez ou voyez la réponse.</p>';
       render(msg);
       var inp = root.querySelector('.mem-input'); if (inp) inp.value = val;
     }
+    else if (a==='sshow'){ subjShown = true; render(); }
+    else if (a==='snext'){ subjCur = null; render(); }
     else if (a==='cnext'){ clozeI++; render(); }
     else if (a==='oredo'){ newOrder(); render(); }
     else if (a==='onext'){ orderI++; newOrder(); render(); }
