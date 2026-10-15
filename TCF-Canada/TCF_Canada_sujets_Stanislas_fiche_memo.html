@@ -8025,9 +8025,38 @@ mmMount({ root:'mmb-root', data:MM_BANK, tasks:MM_TASKS_BANK, key:'mmb-tab',
   ];
   var dup = { e2:[4,9], o3:[4,13] };
   var h = '<h2>Probabilité des sujets d\'examen</h2>'
-    + '<p class="mm-lead">Estimation à partir des sujets de septembre 2026 rapportés par des candidats (Collège Stanislas). La probabilité d\'un thème = part des sujets rapportés qui portent sur ce thème. Touchez un numéro pour ouvrir le sujet découpé.</p>'
-    + '<div class="mm-card mmp-warn"><p class="mm-tip">⚠️ <b>Ce n\'est pas une prédiction officielle.</b> L\'échantillon est petit (13 combinaisons à l\'écrit, 30 sujets par tâche à l\'oral) et les sujets changent d\'un mois à l\'autre. Les <b>types</b> de sujets, eux, reviennent souvent.</p></div>'
-    + '<div class="mm-card"><h3>🎯 Priorités</h3>'
+    + '<p class="mm-lead">Estimation à partir des sujets rapportés par des candidats : octobre 2026 (17 combinaisons d\'expression écrite) et septembre 2026 (Collège Stanislas, écrit et oral). La probabilité d\'un thème = part des sujets rapportés qui portent sur ce thème. Touchez un numéro pour ouvrir le sujet découpé.</p>'
+    + '<div class="mm-card mmp-warn"><p class="mm-tip">⚠️ <b>Ce n\'est pas une prédiction officielle.</b> L\'échantillon est petit et les listes changent d\'un mois à l\'autre, mais une partie des sujets revient (25 % des tâches d\'octobre étaient déjà tombées en septembre). Pour l\'oral, seuls les sujets de septembre sont disponibles.</p></div>'
+;
+  var OCTG = [
+    ['T1 · Message', 't1', [["Décrire un lieu (logement, ville, école, salle de sport)",[1,3,5,6,11,12,16]],["Inviter, proposer une activité",[2,4,8,14,15,17]],["Décrire autre chose (travail, fête, programme)",[9,10,13]],["Vendre un objet",[7]]]],
+    ['T2 · Récit', 't2', [["Un événement ou une sortie (concert, festival, fête, restaurant…)",[5,6,9,12,13,15,16]],["Études, travail, formation",[2,4,7,11,14]],["Une expérience personnelle (sport, personne âgée, artiste)",[8,10,17]],["Apprendre une langue",[1]],["Voyage",[3]]]],
+    ['T3 · Opinion', 't3', [["Société, famille, logement",[2,3,9,15]],["Écrans, technologies et école",[4,5,10,14]],["Ville, environnement, animaux",[7,12,13,17]],["Alimentation",[1,11,16]],["Travail",[6,8]]]]
+  ];
+  var NEWC = {8:1, 9:1}, SEPTC = {3:1, 15:1, 17:1};
+  h += '<div class="mm-grp">🍂 Expression écrite · octobre 2026 (17 combinaisons)</div>'
+    + '<div class="mm-card"><h3>🎯 Ce que disent les sujets d\'octobre</h3>'
+    + '<p class="mm-tip"><b>Chaque combinaison :</b> 1 chance sur 17, soit environ <b>6 %</b>, si l\'examen reprend la liste d\'octobre.</p>'
+    + '<p class="mm-tip"><b>Écrit T1 :</b> décrire un lieu + inviter ≈ <b>76 %</b> des sujets.</p>'
+    + '<p class="mm-tip"><b>Écrit T2 :</b> un événement / une sortie + études / travail ≈ <b>71 %</b> des sujets.</p>'
+    + '<p class="mm-tip"><b>Écrit T3 :</b> thèmes très partagés ; société, écrans / école et environnement ≈ <b>71 %</b> des sujets.</p>'
+    + '<p class="mm-tip"><b>Répétitions :</b> 3 combinaisons sur 17 (<b>18 %</b>) sont identiques à septembre (3, 15, 17), et 13 tâches sur 51 (<b>25 %</b>) étaient déjà tombées en septembre.</p>'
+    + '<p class="mm-tip"><b>Combinaisons 8 et 9 :</b> les seules entièrement nouvelles (orange). Leurs modèles sont dans l\'onglet 🍂 Octobre 2026.</p></div>';
+  OCTG.forEach(function(x){
+    var groups = x[2].slice().sort(function(a,b){ return b[1].length-a[1].length; });
+    h += '<div class="mmp-task"><h3>'+x[0]+' · octobre</h3>';
+    groups.forEach(function(g){
+      var pct = Math.round(g[1].length*100/17);
+      h += '<div class="mmp-row"><div class="mmp-head"><span class="mmp-name">'+esc(g[0])+'</span><span class="mmp-pct">'+pct+' %<small> · '+g[1].length+'/17</small></span></div>'
+        + '<div class="mmp-bar" role="img" aria-label="'+pct+' pour cent"><span style="width:'+pct+'%"></span></div><div class="mmp-chips">'
+        + g[1].map(function(n){ return '<button type="button" class="mmp-chip mmp-oct'+(NEWC[n]?' is-dup':'')+'" data-on="'+n+'" data-ot="'+x[1]+'" title="Combinaison '+n+'">C'+n+(NEWC[n]?' 🆕':SEPTC[n]?' ↺':'')+'</button>'; }).join('')
+        + '</div></div>';
+    });
+    h += '</div>';
+  });
+  h += '<p class="mem-lead" style="margin:.2rem 0 1.2rem">🆕 = combinaison nouvelle · ↺ = combinaison identique à septembre.</p>'
+    + '<div class="mm-grp">🍁 Septembre 2026 (sujets Stanislas)</div>'
+    + '<div class="mm-card"><h3>🎯 Priorités (septembre)</h3>'
     + '<p class="mm-tip"><b>Oral T1 :</b> la présentation tombe à <b>100 %</b>. Rodez-la parfaitement.</p>'
     + '<p class="mm-tip"><b>Écrit T1 :</b> invitation + description d\'un lieu ≈ <b>85 %</b> des sujets.</p>'
     + '<p class="mm-tip"><b>Écrit T3 :</b> société + alimentation ≈ <b>77 %</b> des sujets.</p>'
@@ -8051,6 +8080,11 @@ mmMount({ root:'mmb-root', data:MM_BANK, tasks:MM_TASKS_BANK, key:'mmb-tab',
   root.innerHTML = h;
   root.addEventListener('click', function(e){
     var c = e.target.closest('.mmp-chip'); if (!c) return;
+    if (c.dataset.on) {
+      document.querySelector('.epreuve-tab[data-epreuve="octobre"]').click();
+      var orr = document.getElementById('oct-root'); if (orr && orr._open) orr._open(+c.dataset.on, c.dataset.ot);
+      return;
+    }
     document.querySelector('.epreuve-tab[data-epreuve="memo"]').click();
     var mr = document.getElementById('mm-root'); mr._mmRender(c.dataset.t);
     var subs = mr.querySelectorAll('.mm-sub');
@@ -8631,7 +8665,7 @@ var MEM_GRAM_CLOZE = [
       if (!ts.length) return;
       h += '<div class="oct-combo"><div class="mm-grp">Combinaison '+c.n+(c.tasks.every(function(x){ return x.new; }) ? ' · 🆕 nouvelle' : c.tasks.every(function(x){ return x.sept; }) ? ' · identique à septembre' : '')+'</div>';
       ts.forEach(function(x){
-        h += '<details class="mm-sub"><summary><span class="mm-ref">'+x.t.toUpperCase()+'</span><span>'+(x.new?'<span class="oct-badge">🆕</span> ':'')+esc(x.c)+'</span></summary><div class="mm-body">'+body(x)+'</div></details>';
+        h += '<details class="mm-sub" data-n="'+c.n+'" data-t="'+x.t+'"><summary><span class="mm-ref">'+x.t.toUpperCase()+'</span><span>'+(x.new?'<span class="oct-badge">🆕</span> ':'')+esc(x.c)+'</span></summary><div class="mm-body">'+body(x)+'</div></details>';
       });
       h += '</div>';
     });
@@ -8639,6 +8673,11 @@ var MEM_GRAM_CLOZE = [
   }
   root.addEventListener('click', function(e){ var b = e.target.closest('button[data-f]'); if (!b) return; filter = b.dataset.f; try { localStorage.setItem('oct-filter', filter); } catch(err){} render(); });
   render();
+  root._open = function(n, t){
+    filter = 'all'; render();
+    var d = root.querySelector('details[data-n="'+n+'"][data-t="'+t+'"]');
+    if (d) { d.open = true; setTimeout(function(){ d.scrollIntoView({behavior:'smooth', block:'start'}); }, 350); }
+  };
 })();
 
 </script>
