@@ -1462,6 +1462,16 @@
   .ess-tgrid li{ font-size:.88rem; margin:.3rem 0; }
   .ess-tgrid li span{ display:block; font:500 .7rem 'IBM Plex Mono',monospace; color:var(--ink-soft); }
 
+  /* 🏫 Drummondville */
+  .mm[data-t="drum"]{ --mm-c:#1B2A4A; --mm-soft:#F3F5F8; }
+  .drum-btn, .drum-go{ display:inline-block; font:600 .78rem 'IBM Plex Mono',monospace; padding:.45rem .8rem; border-radius:8px; border:1.5px solid var(--c,#1B2A4A); background:#fff; color:var(--c,#1B2A4A); cursor:pointer; min-height:36px; text-decoration:none; margin:.15rem .2rem .15rem 0; }
+  .drum-go{ padding:.3rem .55rem; font-size:.72rem; white-space:nowrap; }
+  .drum-chk li{ cursor:pointer; border-radius:6px; padding:.15rem .3rem; }
+  .drum-chk li:focus-visible{ outline:2px solid var(--c); }
+  .drum-chk li.is-on{ text-decoration:line-through; color:var(--ink-soft); }
+  .drum-chk li.is-on::before{ content:"☑ "; }
+  .drum-mail{ font-size:.86rem; line-height:1.5; }
+
 </style>
 </head>
 <body class="theme-e1">
@@ -1484,6 +1494,7 @@
   <button class="epreuve-tab" data-epreuve="phrases" role="tab" aria-selected="false">🗂️ Phrases-clés</button>
   <button class="epreuve-tab" data-epreuve="stanislas" role="tab" aria-selected="false">🏫 Sujets Stanislas</button>
   <button class="epreuve-tab" data-epreuve="essentiel" role="tab" aria-selected="false">⚡ L'essentiel</button>
+  <button class="epreuve-tab" data-epreuve="drummond" role="tab" aria-selected="false">🏫 Drummondville</button>
   <button class="epreuve-tab" data-epreuve="memo" role="tab" aria-selected="false">🧩 Stanislas · fiche mémo</button>
   <button class="epreuve-tab" data-epreuve="octobre" role="tab" aria-selected="false">🍂 Octobre</button>
   <button class="epreuve-tab" data-epreuve="memoe" role="tab" aria-selected="false">🧩 Écrite · fiche mémo</button>
@@ -7083,6 +7094,78 @@
 </div>
 </div>
 
+<div class="epreuve-panel" id="epreuve-drummond" role="tabpanel" hidden>
+<div class="sheet mm" data-t="drum"><div class="ess-head" id="drum-root">
+  <h2>🏫 Drummondville · TCF Canada</h2>
+  <p><b>Samedi 17 octobre 2026</b> · EIF – École internationale de français (UQTR) · campus de Drummondville</p>
+  <div class="ess-day">
+    <span><b>📍</b> 555, boul. de l'Université</span><span><b>☎</b> 819-376-5124</span><span><b>✉</b> eif.tcf@uqtr.ca</span><span><b>🗓</b> sessions oct. : 17 et 31</span>
+  </div>
+  <p><a class="drum-btn" href="https://www.google.com/maps/search/?api=1&amp;query=555+boulevard+de+l%27Universit%C3%A9+Drummondville+QC" target="_blank" rel="noopener">🗺 Itinéraire (Google Maps)</a></p>
+</div>
+
+<section class="ess-card" style="--c:#0369A1;--s:#E8F3FA">
+  <h3>🏢 Le centre <small>ce qu'on sait</small></h3>
+  <ul>
+    <li><b>Drummondville</b> fait passer le <u>TCF Canada</u> ; <b>Trois-Rivières</b> fait passer le TCF Québec.</li>
+    <li>Plusieurs sessions par semaine entre les deux campus : <u>les sujets sont les mêmes</u> pour tous les centres pendant le mois (banque d'octobre 2026).</li>
+    <li>Prix annoncé ≈ <b>478 $</b> taxes incluses (4 épreuves obligatoires).</li>
+    <li>Attestation de résultats ≈ <b>15 jours ouvrables</b> après l'examen.</li>
+  </ul>
+  <p class="ess-trap">⚠ Infos trouvées en ligne, non vérifiées sur le site officiel (bloqué pendant la recherche). <u>La convocation fait foi.</u></p>
+</section>
+
+<section class="ess-card" style="--c:#B45309;--s:#FEF6E7">
+  <h3>📞 À confirmer avec le centre <small>aujourd'hui</small></h3>
+  <ul class="ess-check drum-chk">
+    <li data-k="h">Heure exacte d'arrivée et local</li>
+    <li data-k="o">Heure de passage à l'<b>oral</b> (le même jour ? à part ?)</li>
+    <li data-k="i">Pièce d'identité acceptée (celle de l'inscription)</li>
+    <li data-k="m">Matériel : stylo fourni ? papier ou ordinateur ?</li>
+    <li data-k="p">Stationnement sur le campus</li>
+  </ul>
+  <p class="ess-model drum-mail" id="drum-mail">Bonjour,<br>Je suis inscrit(e) au TCF Canada du samedi 17 octobre 2026 à Drummondville. Pourriez-vous me confirmer l'heure d'arrivée, le local, l'heure de mon passage à l'épreuve orale et la pièce d'identité à présenter ?<br>Merci beaucoup,<br>[Prénom NOM] – [numéro de candidat]</p>
+  <p><button class="drum-btn" data-act="copy">📋 Copier le courriel</button> <a class="drum-btn" href="mailto:eif.tcf@uqtr.ca?subject=TCF%20Canada%20%E2%80%93%2017%20octobre%202026">✉ Écrire au centre</a> <a class="drum-btn" href="tel:+18193765124">☎ Appeler</a></p>
+</section>
+
+<section class="ess-card" style="--c:#7C3AED;--s:#F3EEFD">
+  <h3>⏱ Déroulement de la journée <small>ordre habituel · à confirmer</small></h3>
+  <div class="ess-tw"><table class="ess-t">
+    <tr><th>Étape</th><th>Durée</th><th>Réflexe</th></tr>
+    <tr><td>Accueil · identité</td><td>≈ 30 min avant</td><td>Téléphone éteint et rangé</td></tr>
+    <tr><td>🎧 Compréhension orale</td><td>35 min</td><td>Lire les réponses <u>avant</u> l'audio</td></tr>
+    <tr><td>📖 Compréhension écrite</td><td>60 min</td><td>Garder 30 min pour la fin</td></tr>
+    <tr><td>✍️ Expression écrite</td><td>60 min</td><td>10 / 20 / 25 min + 5 min de relecture</td></tr>
+    <tr><td>🎤 Expression orale</td><td>12 min</td><td>Souvent à une autre heure : <u>vérifier</u></td></tr>
+  </table></div>
+</section>
+
+<section class="ess-card" style="--c:#BE123C;--s:#FCEEF1">
+  <h3>📅 Plan d'ici samedi</h3>
+  <div class="ess-tw"><table class="ess-t">
+    <tr><th>Quand</th><th>Quoi</th><th>Onglet</th></tr>
+    <tr><td><b>Vendredi</b> matin</td><td>Écrit : les 17 combinaisons d'octobre 2026, surtout les 4 identiques à septembre (1, 3, 15, 17)</td><td><button class="drum-go" data-go="octobre">🍂 Octobre</button></td></tr>
+    <tr><td><b>Vendredi</b> après-midi</td><td>Oral : top 3 T2 (préparer 8–10 questions) et T3 (avis + 2 arguments)</td><td><button class="drum-go" data-go="essentiel">⚡ L'essentiel</button></td></tr>
+    <tr><td><b>Vendredi</b> soir</td><td>Connecteurs et phrases clés, 20 min max, puis dormir</td><td><button class="drum-go" data-go="memoriser">🧠 Mémoriser</button></td></tr>
+    <tr><td><b>Samedi</b> matin</td><td>Petit-déjeuner, relire la fiche ⚡ L'essentiel, partir tôt</td><td><button class="drum-go" data-go="essentiel">⚡ L'essentiel</button></td></tr>
+  </table></div>
+</section>
+
+<section class="ess-card" style="--c:#0F766E;--s:#E8F6F4">
+  <h3>🎒 Sac du jour J <small>coche au fur et à mesure</small></h3>
+  <ul class="ess-check drum-chk">
+    <li data-k="id">Pièce d'identité de l'inscription (passeport)</li>
+    <li data-k="cv">Convocation (papier ou sur le téléphone, montrée avant de l'éteindre)</li>
+    <li data-k="st">2 stylos</li>
+    <li data-k="ea">Bouteille d'eau, collation</li>
+    <li data-k="mo">Montre non connectée (si autorisée)</li>
+    <li data-k="ve">Une couche de vêtements en plus (salle froide)</li>
+  </ul>
+  <p><button class="drum-btn" data-act="reset">↺ Tout décocher</button></p>
+</section>
+</div>
+</div>
+
 <div class="epreuve-panel" id="epreuve-essentiel" role="tabpanel" hidden>
 <div class="sheet mm" data-t="ess"><div class="ess-head">
   <h2>⚡ L'essentiel · TCF Canada</h2>
@@ -8936,6 +9019,38 @@ var MEM_GRAM_CLOZE = [
     var d = root.querySelector('details[data-n="'+n+'"][data-t="'+t+'"]');
     if (d) { d.open = true; setTimeout(function(){ d.scrollIntoView({behavior:'smooth', block:'start'}); }, 350); }
   };
+})();
+
+(function(){
+  var P = document.getElementById('epreuve-drummond'); if (!P) return;
+  var KEY = 'tcf-drum-v1', st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { st = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e) {} }
+  function paint(){
+    P.querySelectorAll('.drum-chk li').forEach(function(li){
+      var on = !!st[li.getAttribute('data-k')];
+      li.classList.toggle('is-on', on); li.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  }
+  P.querySelectorAll('.drum-chk li').forEach(function(li){
+    li.setAttribute('role', 'checkbox'); li.tabIndex = 0;
+    function t(){ var k = li.getAttribute('data-k'); st[k] = !st[k]; save(); paint(); }
+    li.addEventListener('click', t);
+    li.addEventListener('keydown', function(e){ if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); t(); } });
+  });
+  P.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    var go = b.getAttribute('data-go');
+    if (go) { var tab = document.querySelector('.epreuve-tab[data-epreuve="' + go + '"]'); if (tab) { tab.click(); window.scrollTo(0, 0); } return; }
+    var act = b.getAttribute('data-act');
+    if (act === 'reset') { st = {}; save(); paint(); }
+    if (act === 'copy') {
+      var txt = document.getElementById('drum-mail').innerText;
+      var done = function(){ b.textContent = '✓ Copié'; setTimeout(function(){ b.textContent = '📋 Copier le courriel'; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, function(){});
+    }
+  });
+  paint();
 })();
 
 </script>
