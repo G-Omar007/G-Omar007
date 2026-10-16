@@ -1472,6 +1472,50 @@
   .drum-chk li.is-on::before{ content:"☑ "; }
   .drum-mail{ font-size:.86rem; line-height:1.5; }
 
+
+  /* ===== Navigation mobile ===== */
+  .mnav, .mdrawer{ display:none; }
+  @media (max-width: 760px){
+    .epreuve-tabs{ display:none !important; }
+    body{ padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+    .tache-nav, .gnav{ top: 0 !important; }
+
+    .mnav{ display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:60;
+      background:rgba(14,20,32,.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border-top:1px solid rgba(255,255,255,.12); padding:4px 4px calc(4px + env(safe-area-inset-bottom)); }
+    .mnav button{ appearance:none; border:0; background:none; color:#CBD5E1; font:600 10.5px/1.15 'IBM Plex Mono',monospace;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:54px; border-radius:10px; padding:4px 2px; cursor:pointer; }
+    .mnav button b{ font-size:20px; line-height:1; font-weight:400; }
+    .mnav button[aria-current="true"]{ background:#2563EB; color:#fff; }
+
+    .mdrawer{ position:fixed; inset:0; z-index:70; background:rgba(8,12,20,.6); }
+    .mdrawer.is-open{ display:block; }
+    .mdrawer__panel{ position:absolute; left:0; right:0; bottom:0; max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+      background:#F7F5EF; color:#1B2A4A; border-radius:18px 18px 0 0; padding:10px 16px calc(18px + env(safe-area-inset-bottom)); }
+    .mdrawer__bar{ display:flex; align-items:center; justify-content:space-between; position:sticky; top:-10px; background:#F7F5EF; padding:8px 0; }
+    .mdrawer__bar h2{ margin:0; font:700 1.05rem 'Fraunces',serif; }
+    .mdrawer__x{ appearance:none; border:1px solid #B9C2C6; background:#fff; border-radius:999px; width:40px; height:40px; font-size:18px; cursor:pointer; color:#1B2A4A; }
+    .mdrawer__g{ margin:12px 0 6px; font:600 .7rem 'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.08em; color:#4A5770; }
+    .mdrawer__grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .mdrawer__grid button{ appearance:none; text-align:left; border:1px solid #B9C2C6; background:#fff; color:#1B2A4A; border-radius:12px;
+      padding:10px 12px; min-height:52px; font:600 .86rem/1.25 system-ui,-apple-system,sans-serif; cursor:pointer; }
+    .mdrawer__grid button[aria-current="true"]{ background:#2563EB; border-color:#2563EB; color:#fff; }
+    body.mdrawer-open{ overflow:hidden; }
+
+    /* Cibles tactiles et petits textes */
+    .tache-nav__btn, .gnav-tab, .fulltext-toggle, .co-btn, .ay-count__pill, .fq-toggle-all, .mm-tools button{ min-height:40px; }
+    .eyebrow, .ticket__ref, .struct-label, .task-examples-label, .stem-label, .ay-sec, .co-cut__lbl, .presento-sub, .presento-tips__title, .argument-col__head{ font-size:12px !important; }
+
+    /* En-tête compact et sous-navigations sur une ligne */
+    .page-hero{ padding:14px 16px 12px !important; }
+    .page-hero__eyebrow, .page-hero__sub{ display:none !important; }
+    .page-hero__title{ font-size:1.25rem !important; margin:0 !important; }
+    .tache-nav, .gnav{ flex-wrap:nowrap !important; justify-content:flex-start !important; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:8px 12px !important; }
+    .tache-nav::-webkit-scrollbar, .gnav::-webkit-scrollbar{ display:none; }
+    .tache-nav__btn, .gnav-tab{ flex:none; white-space:nowrap; }
+    .epreuve-panel{ padding-top:.8rem !important; }
+  }
+
 </style>
 </head>
 <body class="theme-e1">
@@ -1479,7 +1523,7 @@
 <div class="page-hero">
   <p class="page-hero__eyebrow">Dossier n° TCF-2026 · Préparation complète</p>
   <h1 class="page-hero__title">Expression écrite &amp; orale</h1>
-  <p class="page-hero__sub">Méthodologie, connecteurs, banques de sujets et corrections rédigées pour les deux épreuves — examen le 31 juillet 2026.</p>
+  <p class="page-hero__sub">Méthodologie, connecteurs, banques de sujets et corrections rédigées pour les quatre épreuves — examen le samedi 17 octobre 2026 à Drummondville.</p>
 </div>
 
 <div class="epreuve-tabs" role="tablist">
@@ -9051,6 +9095,77 @@ var MEM_GRAM_CLOZE = [
     }
   });
   paint();
+})();
+
+(function(){
+  var tabs = [].slice.call(document.querySelectorAll('.epreuve-tab'));
+  if (!tabs.length) return;
+  var LAST = 'tcf-last-tab';
+  function tab(id){ return document.querySelector('.epreuve-tab[data-epreuve="' + id + '"]'); }
+  function label(id){ var t = tab(id); return t ? t.textContent.trim() : id; }
+  function isMobile(){ return window.matchMedia('(max-width: 760px)').matches; }
+
+  var QUICK = [['essentiel','⚡','Essentiel'],['octobre','🍂','Octobre'],['proba','📊','Probas'],['memoriser','🧠','Mémoriser']];
+  var GROUPS = [
+    ['🎯 Examen de samedi', ['essentiel','drummond','octobre','proba','memoriser']],
+    ['🧩 Fiches mémo et sujets', ['memo','memoe','memob','stanislas']],
+    ['📚 Cours et méthode', ['ecrite','orale','guide','ayoub','phrases']],
+    ['🛠 Outils', ['correcteur','correction','simulateur','diagnostic']]
+  ];
+  var used = {}; GROUPS.forEach(function(g){ g[1].forEach(function(id){ used[id] = 1; }); });
+  var rest = tabs.map(function(t){ return t.dataset.epreuve; }).filter(function(id){ return !used[id]; });
+  if (rest.length) GROUPS.push(['Autres', rest]);
+
+  var nav = document.createElement('nav'); nav.className = 'mnav'; nav.setAttribute('aria-label', 'Navigation');
+  QUICK.forEach(function(q){
+    if (!tab(q[0])) return;
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.go = q[0];
+    b.innerHTML = '<b>' + q[1] + '</b>' + q[2]; nav.appendChild(b);
+  });
+  var more = document.createElement('button'); more.type = 'button'; more.dataset.act = 'more';
+  more.innerHTML = '<b>☰</b>Tous'; nav.appendChild(more);
+  document.body.appendChild(nav);
+
+  var dr = document.createElement('div'); dr.className = 'mdrawer'; dr.setAttribute('role', 'dialog'); dr.setAttribute('aria-modal', 'true'); dr.setAttribute('aria-label', 'Tous les onglets');
+  var h = '<div class="mdrawer__panel"><div class="mdrawer__bar"><h2>Tous les onglets</h2><button type="button" class="mdrawer__x" data-act="close" aria-label="Fermer">✕</button></div>';
+  GROUPS.forEach(function(g){
+    var ids = g[1].filter(function(id){ return tab(id); }); if (!ids.length) return;
+    h += '<p class="mdrawer__g">' + g[0] + '</p><div class="mdrawer__grid">';
+    ids.forEach(function(id){ h += '<button type="button" data-go="' + id + '">' + label(id) + '</button>'; });
+    h += '</div>';
+  });
+  dr.innerHTML = h + '</div>';
+  document.body.appendChild(dr);
+
+  function open(){ dr.classList.add('is-open'); document.body.classList.add('mdrawer-open'); }
+  function close(){ dr.classList.remove('is-open'); document.body.classList.remove('mdrawer-open'); }
+  function sync(){
+    var a = document.querySelector('.epreuve-tab.is-active'); var cur = a ? a.dataset.epreuve : '';
+    var inQuick = false;
+    nav.querySelectorAll('button[data-go]').forEach(function(b){ var on = b.dataset.go === cur; if (on) inQuick = true; b.setAttribute('aria-current', on ? 'true' : 'false'); });
+    more.setAttribute('aria-current', inQuick ? 'false' : 'true');
+    dr.querySelectorAll('button[data-go]').forEach(function(b){ b.setAttribute('aria-current', b.dataset.go === cur ? 'true' : 'false'); });
+    try { if (cur) localStorage.setItem(LAST, cur); } catch(e) {}
+  }
+  function go(id){ var t = tab(id); if (t) t.click(); close(); }
+
+  nav.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.act === 'more') open(); else go(b.dataset.go);
+  });
+  dr.addEventListener('click', function(e){
+    if (e.target === dr) { close(); return; }
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.act === 'close') close(); else if (b.dataset.go) go(b.dataset.go);
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setTimeout(sync, 0); }); });
+
+  var start = null;
+  try { start = localStorage.getItem(LAST); } catch(e) {}
+  if (!start || !tab(start)) start = isMobile() ? 'essentiel' : null;
+  if (start && tab(start) && !tab(start).classList.contains('is-active')) { tab(start).click(); window.scrollTo(0, 0); }
+  sync();
 })();
 
 </script>
